@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Karierni center UL</string>
+    <string name="ime">Ime in Priimek</string>
+    <string name="zivljenjepis">Življenjepis</string>
+    <string name="ulica">Ulica</string>
+    <string name="hisnaSt">Hišna št.</string>
+    <string name="postnaSt">Poštna št.</string>
+    <string name="kraj">Kraj</string>
+    <string name="kontakt">Kontakt</string>
+    <string name="email">e-mail</string>
+    <string name="telefonskaSt">Telefonska št.</string>
+    <string name="izobrazba">Izobrazba</string>
+    <string name="od">Od</string>
+    <string name="oddo">Do</string>
+    <string name="studijskaSmer">Študijska smer</string>
+    <string name="gumbDodaj">DODAJ</string>
+    <string name="delovnoMesto">Delovno mesto</string>
+    <string name="delovneIzkusnje">Pretekle delovne izkušnje</string>
 </resources>
