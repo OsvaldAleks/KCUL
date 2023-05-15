@@ -16,4 +16,7 @@
     <string name="gumbDodaj">DODAJ</string>
     <string name="delovnoMesto">Delovno mesto</string>
     <string name="delovneIzkusnje">Pretekle delovne izkušnje</string>
+    <string name="PonudbaDel">Ponudba del</string>
+    <string name="shrani">SHRANI</string>
+    <string name="missingInputError">Izpolnite vsa polja</string>
 </resources>

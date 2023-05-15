@@ -4,12 +4,30 @@
     android:orientation="vertical">
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:autoSizeTextType="uniform"
-        android:layout_margin="20dp"
-        android:text="@string/zivljenjepis"/>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:autoSizeTextType="uniform"
+            android:text="@string/zivljenjepis" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:id="@+id/shrani"
+            android:textColor="@color/design_default_color_primary"
+            android:text="@string/shrani"/>
+    </LinearLayout>
 
     <EditText
         android:layout_width="match_parent"
@@ -37,6 +55,7 @@
             android:layout_marginRight="20dp"
             android:layout_height="wrap_content"
             android:id="@+id/hisnaSt"
+            android:inputType="number"
             android:hint="@string/hisnaSt"/>
     </LinearLayout>
 
@@ -50,6 +69,7 @@
             android:layout_marginRight="10dp"
             android:layout_height="wrap_content"
             android:id="@+id/postnaSt"
+            android:inputType="number"
             android:hint="@string/postnaSt"/>
         <EditText
             android:layout_width="0dip"
@@ -78,7 +98,8 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/baseline_mail_outline_24"/>
+            android:src="@drawable/baseline_mail_outline_24"
+            android:tint="@color/design_default_color_primary"/>
         <EditText
             android:layout_width="0dip"
             android:layout_weight="1"
@@ -96,7 +117,8 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/baseline_phone_24"/>
+            android:src="@drawable/baseline_phone_24"
+            android:tint="@color/design_default_color_primary"/>
         <EditText
             android:layout_width="0dip"
             android:layout_weight="1"
