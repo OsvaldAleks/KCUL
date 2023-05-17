@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/round_home_24"
+        android:id="@+id/home"/>
+
+    <item android:title="Events"
+        android:icon="@drawable/round_event_24"
+        android:id="@+id/events"/>
+
+    <item android:title="CV"
+        android:icon="@drawable/round_assignment_ind_24"
+        android:id="@+id/cv"/>
+
+    <item android:title="Jobs"
+        android:icon="@drawable/round_assignment_24"
+        android:id="@+id/jobs"/>
+</menu>
