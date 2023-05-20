@@ -8,8 +8,6 @@ import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import si.uni_lj.fe.tnuv.kariernicenterul.databinding.ActivityMainBinding;
-
 public class MainActivity extends AppCompatActivity {
 
     Button profileB, eventsB, jobsB;
@@ -20,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //find buttons
         profileB = findViewById(R.id.buttonProfile);
         eventsB = findViewById(R.id.buttonEvents);
