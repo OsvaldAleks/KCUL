@@ -52,6 +52,7 @@ public class EditProfile extends AppCompatActivity {
         izobrazbaView = findViewById(R.id.seznamIzobrazbe);
         izkusnjeView = findViewById(R.id.seznamIzkusenj);
 
+        //add 1 empty line per category by default
         addLineTo(R.id.seznamIzobrazbe);
         addLineTo(R.id.seznamIzkusenj);
 
@@ -64,10 +65,9 @@ public class EditProfile extends AppCompatActivity {
             while (line != null) {
                 stringBuilder.append(line).append('\n');
                 line = reader.readLine();
-
             }
+
             //if there's no error fill the inputs with values
-            //parse the stringBuilder then setText on each field
             fillForm(new JSONObject(stringBuilder.toString()));
 
         } catch (IOException e) {
@@ -75,13 +75,16 @@ public class EditProfile extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+        //setting onClick listeners
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
     }
 
+    //called if userData file exists - fills the form with saved data
     private void fillForm(JSONObject userData) {
         try {
+            //sat text to all fields
             imeView.setText(userData.getString("ime"));
             ulicaView.setText(userData.getString("ulica"));
             hisnaStView.setText(userData.getString("hisnaSt"));
@@ -90,6 +93,7 @@ public class EditProfile extends AppCompatActivity {
             emailView.setText(userData.getString("email"));
             telefonView.setText(userData.getString("telefon"));
 
+            //iterate through all past education -> add new line of inputs for each and fill them with data
             JSONArray izobrazbaArray = userData.getJSONArray("izobrazba");
             for(int i = 0; i < izobrazbaArray.length(); i++){
                 JSONObject entry = izobrazbaArray.getJSONObject(i);
@@ -101,6 +105,7 @@ public class EditProfile extends AppCompatActivity {
                     addLineTo(R.id.seznamIzobrazbe);
             }
 
+            //iterate through all past education -> add new line of inputs for each and fill them with data
             JSONArray izkusnjeArray = userData.getJSONArray("izkusnje");
             for(int i = 0; i < izkusnjeArray.length(); i++){
                 JSONObject entry = izkusnjeArray.getJSONObject(i);
@@ -111,22 +116,21 @@ public class EditProfile extends AppCompatActivity {
                 if(i < izkusnjeArray.length() - 1)
                     addLineTo(R.id.seznamIzkusenj);
             }
-            //izobrazbaView = findViewById(R.id.seznamIzobrazbe);
-            //izkusnjeView = findViewById(R.id.seznamIzkusenj);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
+    //adds new line of inputs to Izobrazba/Izkusnje section
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
         getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
         return 1;
     }
 
-    //SAVE USER DATA to FILE
+    //saves user data to JSON file
     private int shrani(){
-        //get values from fields
+        //read values from fields
         String ime = imeView.getText().toString(),
                 ulica = ulicaView.getText().toString(),
                 kraj = krajView.getText().toString(),
@@ -134,18 +138,18 @@ public class EditProfile extends AppCompatActivity {
                 telefon = telefonView.getText().toString(),
                 hisnaSt = hisnaStView.getText().toString(),
                 postnaSt = postnaStView.getText().toString();
-
         String[][] izobrazba = readListItems(izobrazbaView);
         String[][] izkusnje = readListItems(izkusnjeView);
 
-        //check validity of input - TODO contextual validation
+        //check validity of input - TODO contextual verification
+
         //check if any are empty
         if(ime.length() == 0 || ulica.length() == 0 || kraj.length() == 0 || email.length() == 0 || telefon.length() == 0 || hisnaSt.length() == 0 || postnaSt.length() == 0){
             Toast.makeText(this, R.string.missingInputError, Toast.LENGTH_LONG).show();
             return 0;
         }
 
-        //build file
+        //build JSONObject
         JSONObject data = new JSONObject();
         try {
             data.putOpt("ime", ime);
@@ -156,6 +160,7 @@ public class EditProfile extends AppCompatActivity {
             data.putOpt("hisnaSt", hisnaSt);
             data.putOpt("postnaSt", postnaSt);
 
+            //izobrazba and izkusnje are arrays of objects
             JSONObject izobrazbaObject = new JSONObject();
             JSONArray izobrazbaArray = new JSONArray();
             for (String[] entry: izobrazba) {
@@ -180,7 +185,7 @@ public class EditProfile extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        //save to file
+        //save JSONObject to file
         try (FileOutputStream fos = openFileOutput("userData.json", Context.MODE_PRIVATE)) { //filename bi blo smiselno definirat nekje drugje... not totally sure where - TODO
             fos.write(data.toString().getBytes());
         } catch (FileNotFoundException e) {
@@ -188,27 +193,10 @@ public class EditProfile extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*
-         //READ FILE (here for testing)
-        StringBuilder stringBuilder = new StringBuilder();
-        try (FileInputStream fis = openFileInput("userData.json");
-             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line = reader.readLine();
-            while (line != null) {
-                stringBuilder.append(line).append('\n');
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
-        }
-        //Toast.makeText(this, stringBuilder.toString(), Toast.LENGTH_LONG).show();
-        Log.d("MyFile",stringBuilder.toString());
-        */
         return 1;
     }
 
+    //iterates through LinearLayouts containing EditText-s (for izkusnje/izobrazba) and saves the values as String[][]
     private String[][] readListItems(LinearLayout seznam){
         int numOfAllItems = seznam.getChildCount(),
             numOfValidEntries = 0;
