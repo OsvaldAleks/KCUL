@@ -19,4 +19,5 @@
     <string name="PonudbaDel">Ponudba del</string>
     <string name="shrani">SHRANI</string>
     <string name="missingInputError">Izpolnite vsa polja</string>
+    <string name="fileSaved">Podatki so bili uspešno shranjeni</string>
 </resources>

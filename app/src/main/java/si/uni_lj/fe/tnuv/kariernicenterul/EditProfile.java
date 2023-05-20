@@ -1,18 +1,9 @@
 package si.uni_lj.fe.tnuv.kariernicenterul;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,16 +13,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class EditProfile extends AppCompatActivity {
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
@@ -57,24 +45,29 @@ public class EditProfile extends AppCompatActivity {
         addLineTo(R.id.seznamIzkusenj);
 
         //try to read the user data file:
+
+
         StringBuilder stringBuilder = new StringBuilder();
-        try (FileInputStream fis = openFileInput("userData.json");
-             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line = reader.readLine();
-            while (line != null) {
-                stringBuilder.append(line).append('\n');
-                line = reader.readLine();
+        File file = this.getFileStreamPath("userData.json");
+        if(file.exists() && file != null) {
+
+            try (FileInputStream fis = openFileInput("userData.json");
+                 InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    stringBuilder.append(line).append('\n');
+                    line = reader.readLine();
+                }
+
+                //if there's no error fill the inputs with values
+                fillForm(new JSONObject(stringBuilder.toString()));
+
+            } catch (IOException e) {
+            } catch (JSONException e) {
             }
 
-            //if there's no error fill the inputs with values
-            fillForm(new JSONObject(stringBuilder.toString()));
-
-        } catch (IOException e) {
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
-
         //setting onClick listeners
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
@@ -94,29 +87,33 @@ public class EditProfile extends AppCompatActivity {
             telefonView.setText(userData.getString("telefon"));
 
             //iterate through all past education -> add new line of inputs for each and fill them with data
-            JSONArray izobrazbaArray = userData.getJSONArray("izobrazba");
-            for(int i = 0; i < izobrazbaArray.length(); i++){
-                JSONObject entry = izobrazbaArray.getJSONObject(i);
-                LinearLayout line = (LinearLayout) izobrazbaView.getChildAt(i);
-                ((EditText)line.getChildAt(0)).setText(entry.getString("od"));
-                ((EditText)line.getChildAt(1)).setText(entry.getString("do"));
-                ((EditText)line.getChildAt(2)).setText(entry.getString("opis"));
-                if(i < izobrazbaArray.length() - 1)
-                    addLineTo(R.id.seznamIzobrazbe);
+            if(userData.has("izobrazba")) {
+                JSONArray izobrazbaArray = userData.getJSONArray("izobrazba");
+                for (int i = 0; i < izobrazbaArray.length(); i++) {
+                    JSONObject entry = izobrazbaArray.getJSONObject(i);
+                    LinearLayout line = (LinearLayout) izobrazbaView.getChildAt(i);
+                    ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
+                    ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
+                    ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
+                    if (i < izobrazbaArray.length() - 1)
+                        addLineTo(R.id.seznamIzobrazbe);
+                }
             }
-
             //iterate through all past education -> add new line of inputs for each and fill them with data
-            JSONArray izkusnjeArray = userData.getJSONArray("izkusnje");
-            for(int i = 0; i < izkusnjeArray.length(); i++){
-                JSONObject entry = izkusnjeArray.getJSONObject(i);
-                LinearLayout line = (LinearLayout) izkusnjeView.getChildAt(i);
-                ((EditText)line.getChildAt(0)).setText(entry.getString("od"));
-                ((EditText)line.getChildAt(1)).setText(entry.getString("do"));
-                ((EditText)line.getChildAt(2)).setText(entry.getString("opis"));
-                if(i < izkusnjeArray.length() - 1)
-                    addLineTo(R.id.seznamIzkusenj);
+            if(userData.has("izkusnje")) {
+                JSONArray izkusnjeArray = userData.getJSONArray("izkusnje");
+                for (int i = 0; i < izkusnjeArray.length(); i++) {
+                    JSONObject entry = izkusnjeArray.getJSONObject(i);
+                    LinearLayout line = (LinearLayout) izkusnjeView.getChildAt(i);
+                    ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
+                    ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
+                    ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
+                    if (i < izkusnjeArray.length() - 1)
+                        addLineTo(R.id.seznamIzkusenj);
+                }
             }
         } catch (JSONException e) {
+            Toast.makeText(EditProfile.this, ""+e, Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
     }
@@ -186,13 +183,15 @@ public class EditProfile extends AppCompatActivity {
         }
 
         //save JSONObject to file
-        try (FileOutputStream fos = openFileOutput("userData.json", Context.MODE_PRIVATE)) { //filename bi blo smiselno definirat nekje drugje... not totally sure where - TODO
+        try (FileOutputStream fos = openFileOutput("userData.json", Context.MODE_PRIVATE)) { //TODO - filename bi blo smiselno definirat nekje drugje... not totally sure where
             fos.write(data.toString().getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Toast.makeText(EditProfile.this, R.string.fileSaved,Toast.LENGTH_LONG).show();
         return 1;
     }
 
