@@ -12,11 +12,9 @@ import android.widget.Button;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
     Button profileB, eventsB, jobsB;
 
     BottomNavigationView bottomNavigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +68,5 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, BrowseJobsActivity.class);
             startActivity(intent);
         });
-
     }
 }
