@@ -20,4 +20,8 @@
     <string name="shrani">SHRANI</string>
     <string name="missingInputError">Izpolnite vsa polja</string>
     <string name="fileSaved">Podatki so bili uspešno shranjeni</string>
+    <string name="home">Home</string>
+    <string name="events">Events</string>
+    <string name="cv">CV</string>
+    <string name="jobs">Jobs</string>
 </resources>

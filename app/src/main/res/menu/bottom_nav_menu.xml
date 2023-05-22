@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Home"
+    <item android:title="@string/home"
         android:icon="@drawable/round_home_24"
         android:id="@+id/home"/>
 
-    <item android:title="Events"
+    <item android:title="@string/events"
         android:icon="@drawable/round_event_24"
         android:id="@+id/events"/>
 
-    <item android:title="CV"
+    <item android:title="@string/cv"
         android:icon="@drawable/round_assignment_ind_24"
         android:id="@+id/cv"/>
 
-    <item android:title="Jobs"
+    <item android:title="@string/jobs"
         android:icon="@drawable/round_assignment_24"
         android:id="@+id/jobs"/>
 </menu>
