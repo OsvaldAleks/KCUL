@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "783742297246",
+    "firebase_url":"https://kcul-52e53-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "kcul-52e53",
+    "storage_bucket": "kcul-52e53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783742297246:android:4a5ae96cfa2399fbf3078f",
+        "android_client_info": {
+          "package_name": "si.uni_lj.fe.tnuv.kariernicenterul"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783742297246-jk0sb73opla4veski8qvuqudcio2rd1s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGZGagEdQJByZ4i0K1lw-9LPmzEOBu8-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783742297246-jk0sb73opla4veski8qvuqudcio2rd1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
