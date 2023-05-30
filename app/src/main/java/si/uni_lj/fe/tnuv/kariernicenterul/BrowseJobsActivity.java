@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
+    ListView lv;
     public static class Post {
 
         public String naziv;
@@ -49,37 +51,20 @@ public class BrowseJobsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
+
+        //set values for private variables
         seznamDel = new ArrayList<>();
-
-        /*
-        dao = new DAODelo();
-        /*
-        THIS CODE CREATES NEW Delo IN DATABASE
-        IT WAS HERE FOR TESTING
-
-        // Read from the database
-        Delo d = new Delo("ASDF","fdDA",(float)8.99);
-
-        dao.add(d).addOnSuccessListener(suc->{
-            Toast.makeText(this, "succ", Toast.LENGTH_LONG).show();
-        }).addOnFailureListener(er->{
-            Toast.makeText(this, "fail", Toast.LENGTH_LONG).show();
-        });
-        */
-
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        dr = db.getReference(Delo.class.getSimpleName());
-
-        //dao.get();
-
-        ListView lv = findViewById(R.id.list);
-
+        lv = findViewById(R.id.list);
         Context contextForAdapter = this;
-
+        //variable delo is used for testing only TODO - remove
         HashMap<String,String> delo = new HashMap<>();
         delo.put("jobTitle","ASDF");
         seznamDel.add(delo);
 
+        //start connection with FireBase
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        dr = db.getReference(Delo.class.getSimpleName());
+        //load data from base
         dr.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -87,48 +72,21 @@ public class BrowseJobsActivity extends AppCompatActivity {
                     Log.e("test", "Error getting data", task.getException());
                 }
                 else {
-                    Log.d("test", "123");
                     try {
                         JSONObject jsonObj = new JSONObject(String.valueOf(task.getResult().getValue()));
-
                         //TODO - some iteration through jobs
-
                         //to je for testing purposes only
-                        Log.d("test", jsonObj+"succ");
-                        //updateArrayList();
-
                         seznamDel.add(delo);
 
-
-                        SimpleAdapter adapter = new SimpleAdapter(
-                                contextForAdapter,
-                                seznamDel,
-                                R.layout.job_offer,
-                                new String[]{"jobTitle"},
-                                new int[]{R.id.jobTitle}
-                        );
-
-                        //vstavi v activity_main
-                        lv.setAdapter(adapter);
-
+                        //after data has been processed append seznam to adapter
+                        appendAdapter(contextForAdapter);
                     } catch (JSONException e) {
-                        Log.d("test", "err");
                         throw new RuntimeException(e);
                     }
 
                 }
             }
         });
-
-        /*
-        //to je for testing purposes only
-        HashMap<String, String> tmp2 = new HashMap<>();
-        tmp2.put("jobTitle", "TITLE");
-        dao.jobs.add(tmp2);
-
-        tmp2.put("jobTitle", "TITLE");
-        dao.jobs.add(tmp2);
-*/
 
         //bottom navigation code
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -160,13 +118,15 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void appendAdapter() {
-
-    }
-
-    private void generateCL() {
-
-
+    private void appendAdapter(Context context) {
+        //creates adapter for ListView and appends Array of job offers to said ListView
+        SimpleAdapter adapter = new SimpleAdapter(
+                context,
+                seznamDel,
+                R.layout.job_offer,
+                new String[]{"jobTitle"},
+                new int[]{R.id.jobTitle}
+        );
+        lv.setAdapter(adapter);
     }
 }
