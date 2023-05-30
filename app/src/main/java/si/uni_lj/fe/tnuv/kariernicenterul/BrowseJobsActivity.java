@@ -83,6 +83,12 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
                                 HashMap<String,String> delo = new HashMap<>();
                                 delo.put("jobTitle",String.valueOf(deloi.get("naziv")));
+                                delo.put("jobPay", String.format("%.2f", Float.valueOf(String.valueOf(deloi.get("placa")))) + getResources().getString(R.string.placaNeto));
+                                delo.put("freeSpace", getResources().getString(R.string.prostaMesta) + String.valueOf(deloi.get("prostaMesta")));
+                                delo.put("duration", getResources().getString(R.string.trajanje) + String.valueOf(deloi.get("trajanje")));
+                                delo.put("worktime", getResources().getString(R.string.delovnik) + String.valueOf(deloi.get("delovnik")));
+                                delo.put("start", getResources().getString(R.string.zacetekDela) + String.valueOf(deloi.get("zacetekDela")));
+
                                 seznamDel.add(delo);
                             }
                         }
@@ -132,8 +138,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 context,
                 seznamDel,
                 R.layout.job_offer,
-                new String[]{"jobTitle"},
-                new int[]{R.id.jobTitle}
+                new String[]{"jobTitle", "jobPay", "freeSpace", "duration", "worktime", "start"},
+                new int[]{R.id.jobTitle, R.id.jobPay, R.id.freeSpace, R.id.duration, R.id.worktime, R.id.start}
         );
         lv.setAdapter(adapter);
     }

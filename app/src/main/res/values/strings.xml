@@ -24,4 +24,10 @@
     <string name="events">Events</string>
     <string name="cv">CV</string>
     <string name="jobs">Jobs</string>
+    <string name="placaNeto">€/h neto</string>
+    <string name="prostaMesta">"Prosta mesta: "</string>
+    <string name="trajanje">"Trajanje: "</string>
+    <string name="delovnik">"Delovnik: "</string>
+    <string name="zacetekDela">"Začetek dela: "</string>
+    <string name="pokaziVec">POKAŽI VEČ</string>
 </resources>

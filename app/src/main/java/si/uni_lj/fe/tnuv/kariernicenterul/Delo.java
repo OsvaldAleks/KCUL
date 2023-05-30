@@ -1,5 +1,9 @@
 package si.uni_lj.fe.tnuv.kariernicenterul;
-
+/*
+IDK če bo ta class še kaj uporaben, but just in case če bo:
+https://www.youtube.com/watch?v=741QCymuky4&t=816s
+^^^tutorial video zarad katerega je bil class ustvarjen
+*/
 public class Delo {
     private String opis;
     private String naziv;
