@@ -15,6 +15,7 @@
         android:paddingTop="6dip"
         android:textSize="16sp"
         android:textStyle="bold" />
+    <!--
     <TextView
         android:id="@+id/jobPay"
         android:layout_width="fill_parent"
@@ -35,5 +36,5 @@
         android:layout_height="wrap_content"
         android:textColor="#5d5d5d"
         android:textStyle="bold" />
-
+    -->
 </LinearLayout>
