@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class BrowseJobsActivity extends AppCompatActivity {
 
@@ -56,10 +57,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
         seznamDel = new ArrayList<>();
         lv = findViewById(R.id.list);
         Context contextForAdapter = this;
-        //variable delo is used for testing only TODO - remove
-        HashMap<String,String> delo = new HashMap<>();
-        delo.put("jobTitle","ASDF");
-        seznamDel.add(delo);
 
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -74,10 +71,21 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 else {
                     try {
                         JSONObject jsonObj = new JSONObject(String.valueOf(task.getResult().getValue()));
-                        //TODO - some iteration through jobs
-                        //to je for testing purposes only
-                        seznamDel.add(delo);
+                        //iteration through jobs
+                        Iterator<String> keys = jsonObj.keys();
+                        while(keys.hasNext()) {
+                            String key = keys.next();
+                            if (jsonObj.get(key) instanceof JSONObject) {
+                                //parsing data from fireBase and bulding seznamDel - TODO add more data(so far it's title only)
 
+                                JSONObject deloi = new JSONObject(String.valueOf(jsonObj.get(key)));
+                                Log.d("test", String.valueOf(jsonObj.get(key)));
+
+                                HashMap<String,String> delo = new HashMap<>();
+                                delo.put("jobTitle",String.valueOf(deloi.get("naziv")));
+                                seznamDel.add(delo);
+                            }
+                        }
                         //after data has been processed append seznam to adapter
                         appendAdapter(contextForAdapter);
                     } catch (JSONException e) {
