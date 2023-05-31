@@ -2,11 +2,15 @@ package si.uni_lj.fe.tnuv.kariernicenterul;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +38,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +58,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ListView lv;
     ProgressBar loadingIndicator;
     Context contextForAdapter;
+    ArrayList<String> favourites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +112,22 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        favourites = new ArrayList<String>();
+        File file = this.getFileStreamPath("savedJobs.txt");
+        boolean remove = false;
+        if(file.exists() && file != null) {
+            try (FileInputStream fis = openFileInput("savedJobs.txt");
+                 InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    favourites.add(line);
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+            }
+        }
     }
 
     private void setBottomNav() {
@@ -147,13 +176,39 @@ public class BrowseJobsActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent){
                 View view = super.getView(position, convertView, parent);
                 Button showMore = (Button) view.findViewById(R.id.showMore);
+                Button favourite = (Button) view.findViewById(R.id.favourite);
+                //there's a hidden TextView in each List item, that holds an ID of the Job Offer
+                TextView idView = (TextView) view.findViewById(R.id.jobId);
+                String id = idView.getText().toString();
                 showMore.setOnClickListener(new View.OnClickListener(){
                     @Override
-                    public void onClick(View v) {
-                        //there's a hidden TextView in each List item, that holds an ID of the Job Offer
-                        TextView id = (TextView) view.findViewById(R.id.jobId);
+                    public void onClick(View v){
                         //that ID is passed, so that the correct offer may be shown in detail on button press
-                        openJobDetailView(id.getText());
+                        openJobDetailView(id);
+                    }
+                });
+
+
+                //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
+
+                //Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
+                //Drawable emptyStar = getDrawable(R.drawable.baseline_star_outline_24);
+
+                //Log.d("test",favourites+" - "+id);
+                //if(favourites.contains(id)){ //TODO - possibly problematic if the firebase data loads before local savedJobs.txt file is read, because favorites would still be unset
+                //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+                //}
+                favourite.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        toggleFavourite(id);
+
+                        //if(favourites.contains(id)){
+                        //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+                        //}
+                        //else{
+                        //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
+                        //}
                     }
                 });
                 return view;
@@ -162,8 +217,29 @@ public class BrowseJobsActivity extends AppCompatActivity {
         loadingIndicator.setVisibility(View.GONE);
         lv.setAdapter(adapter);
     }
+    private void toggleFavourite(String jobToFavourite) {
+        if(favourites.contains(jobToFavourite)){
+            favourites.remove(jobToFavourite);
+        }
+        else{
+            favourites.add(jobToFavourite);
+        }
+        String toSave = "";
+        if (favourites.size() >= 1){
+            for (int i = 0; i < favourites.size(); i++){
+                toSave += (favourites.get(i)+"\n");
+            }
+        }
+        try (FileOutputStream fos = openFileOutput("savedJobs.txt", Context.MODE_PRIVATE)) {
+            fos.write(toSave.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    private void openJobDetailView(CharSequence id) {
+    private void openJobDetailView(String id) {
         setContentView(R.layout.job_detail);
 
         TextView jobTitle = findViewById(R.id.jobTitle);
