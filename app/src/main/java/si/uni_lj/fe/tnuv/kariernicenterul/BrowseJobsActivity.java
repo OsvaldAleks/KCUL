@@ -48,7 +48,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         //set values for private variables
         seznamDel = new ArrayList<>();
-        updateContext();
+        setView();
 
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -92,8 +92,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
+    private void setBottomNav() {
         //bottom navigation code
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.jobs);
@@ -124,6 +125,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
+
     private void appendAdapter(Context context) {
         //creates adapter for ListView and appends Array of job offers to said ListView
         SimpleAdapter adapter = new SimpleAdapter(
@@ -163,7 +165,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
             back.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     setContentView(R.layout.activity_browse_jobs);
-                    updateContext();
+                    setView();
                     appendAdapter(contextForAdapter);
                 }
             });
@@ -172,8 +174,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
         Toast.makeText(this, "Klik na ", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateContext() {
+    private void setView() {
         lv = findViewById(R.id.list);
         contextForAdapter = this;
+        setBottomNav();
     }
 }
