@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -74,13 +78,14 @@ public class BrowseJobsActivity extends AppCompatActivity {
                                 JSONObject deloi = new JSONObject(String.valueOf(jsonObj.get(key)));
 
                                 HashMap<String,String> delo = new HashMap<>();
-                                delo.put("id",key);
+                                delo.put("jobId",key);
                                 delo.put("jobTitle",String.valueOf(deloi.get("naziv")));
                                 delo.put("jobPay", String.format("%.2f", Float.valueOf(String.valueOf(deloi.get("placa")))) + getResources().getString(R.string.placaNeto));
                                 delo.put("freeSpace", getResources().getString(R.string.prostaMesta) + String.valueOf(deloi.get("prostaMesta")));
                                 delo.put("duration", getResources().getString(R.string.trajanje) + String.valueOf(deloi.get("trajanje")));
                                 delo.put("worktime", getResources().getString(R.string.delovnik) + String.valueOf(deloi.get("delovnik")));
                                 delo.put("start", getResources().getString(R.string.zacetekDela) + String.valueOf(deloi.get("zacetekDela")));
+                                delo.put("description", String.valueOf(deloi.get("opis")));
 
                                 seznamDel.add(delo);
                             }
@@ -134,45 +139,64 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 context,
                 seznamDel,
                 R.layout.job_offer,
-                new String[]{"jobTitle", "jobPay", "freeSpace", "duration", "worktime", "start"},
-                new int[]{R.id.jobTitle, R.id.jobPay, R.id.freeSpace, R.id.duration, R.id.worktime, R.id.start}
-        );
-
-        Log.d("test", "appendingAdapter:"+context);
+                new String[]{"jobId", "jobTitle", "jobPay", "freeSpace", "duration", "worktime", "start"},
+                new int[]{R.id.jobId, R.id.jobTitle, R.id.jobPay, R.id.freeSpace, R.id.duration, R.id.worktime, R.id.start}
+        ){
+            //getView has to be overWritten, else buttons couldn't be clickable within a list item
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                View view = super.getView(position, convertView, parent);
+                Button showMore = (Button) view.findViewById(R.id.showMore);
+                showMore.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        //there's a hidden TextView in each List item, that holds an ID of the Job Offer
+                        TextView id = (TextView) view.findViewById(R.id.jobId);
+                        //that ID is passed, so that the correct offer may be shown in detail on button press
+                        openJobDetailView(id.getText());
+                    }
+                });
+                return view;
+            }
+        };
         loadingIndicator.setVisibility(View.GONE);
         lv.setAdapter(adapter);
+    }
 
-        lv.setOnItemClickListener((parent, view, position, id)->{
+    private void openJobDetailView(CharSequence id) {
+        setContentView(R.layout.job_detail);
 
-            String ime = (String)((HashMap)seznamDel.get(position)).get("id");
+        TextView jobTitle = findViewById(R.id.jobTitle);
+        TextView jobPay = findViewById(R.id.jobPay);
+        TextView freeSpace = findViewById(R.id.freeSpace);
+        TextView duration = findViewById(R.id.duration);
+        TextView worktime = findViewById(R.id.worktime);
+        TextView start = findViewById(R.id.start);
+        TextView description = findViewById(R.id.description);
+        ImageView back = findViewById(R.id.back);
 
-            setContentView(R.layout.job_detail);
 
-            TextView jobTitle = findViewById(R.id.jobTitle);
-            TextView jobPay = findViewById(R.id.jobPay);
-            TextView freeSpace = findViewById(R.id.freeSpace);
-            TextView duration = findViewById(R.id.duration);
-            TextView worktime = findViewById(R.id.worktime);
-            TextView start = findViewById(R.id.start);
-            TextView description = findViewById(R.id.description);
-            Button back = findViewById(R.id.back);
+        for (HashMap<String, String> ponudba : seznamDel){
+            if(ponudba.get("jobId")==id){
+                jobTitle.setText(ponudba.get("jobTitle"));
+                jobPay.setText(ponudba.get("jobPay"));
+                freeSpace.setText(ponudba.get("freeSpace"));
+                duration.setText(ponudba.get("duration"));
+                worktime.setText(ponudba.get("worktime"));
+                start.setText(ponudba.get("start"));
+                description.setText(ponudba.get("description"));
+                break;
+            }
+        }
 
-            jobTitle.setText("NAZIV");
-            jobPay.setText("NAZIV");
-            freeSpace.setText("NAZIV");
-            duration.setText("NAZIV");
-            worktime.setText("NAZIV");
-            start.setText("NAZIV");
-            description.setText("NAZIV");
-            back.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    setContentView(R.layout.activity_browse_jobs);
-                    setView();
-                    appendAdapter(contextForAdapter);
-                }
-            });
-
+        back.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                setContentView(R.layout.activity_browse_jobs);
+                setView();
+                appendAdapter(contextForAdapter);
+            }
         });
+        setBottomNav();
     }
 
     private void setView() {

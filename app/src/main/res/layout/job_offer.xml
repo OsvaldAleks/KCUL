@@ -7,6 +7,12 @@
     android:layout_margin="20dp"
     android:padding="10dp">
     <TextView
+        android:id="@+id/jobId"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        android:layout_width="match_parent"
+        android:visibility="invisible"/>
+    <TextView
         android:id="@+id/jobTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -65,6 +71,7 @@
             android:focusable="false"
             />
         <Button
+            android:id="@+id/showMore"
             android:text="@string/pokaziVec"
             android:layout_height="wrap_content"
             android:layout_width="0dp"

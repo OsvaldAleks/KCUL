@@ -30,4 +30,5 @@
     <string name="delovnik">"Delovnik: "</string>
     <string name="zacetekDela">"Začetek dela: "</string>
     <string name="pokaziVec">POKAŽI VEČ</string>
+    <string name="prijaviSe">PRIJAVI SE</string>
 </resources>

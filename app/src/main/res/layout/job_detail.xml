@@ -19,17 +19,16 @@
                 android:layout_margin="20dp"
                 android:text="@string/PonudbaDel"/>
         </LinearLayout>
-    <Button
-        android:drawableLeft="@drawable/baseline_arrow_back_24"
-        android:backgroundTint="#00aaaaff"
-        android:id="@+id/back"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
-
     <TextView
         android:id="@+id/jobTitle"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
+    <ImageView
+        android:src="@drawable/baseline_arrow_back_24"
+        android:id="@+id/back"
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
     <TextView
         android:id="@+id/jobPay"
         android:layout_width="fill_parent"
@@ -51,12 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_height="wrap_content"
@@ -71,6 +64,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
+        <TextView
+            android:id="@+id/description"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -86,7 +83,7 @@
             android:focusable="false"
             />
         <Button
-            android:text="@string/pokaziVec"
+            android:text="@string/prijaviSe"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -94,4 +91,9 @@
             android:focusable="false"
             />
     </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_navigation"
+        app:menu="@menu/bottom_nav_menu"/>
 </LinearLayout>
