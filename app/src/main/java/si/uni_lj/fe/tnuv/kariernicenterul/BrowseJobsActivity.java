@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
     ListView lv;
+    ProgressBar loadingIndicator;
     Context contextForAdapter;
 
     @Override
@@ -137,12 +139,12 @@ public class BrowseJobsActivity extends AppCompatActivity {
         );
 
         Log.d("test", "appendingAdapter:"+context);
+        loadingIndicator.setVisibility(View.GONE);
         lv.setAdapter(adapter);
 
         lv.setOnItemClickListener((parent, view, position, id)->{
 
             String ime = (String)((HashMap)seznamDel.get(position)).get("id");
-            Toast.makeText(this, "Klik na " + ime, Toast.LENGTH_SHORT).show();
 
             setContentView(R.layout.job_detail);
 
@@ -171,11 +173,11 @@ public class BrowseJobsActivity extends AppCompatActivity {
             });
 
         });
-        Toast.makeText(this, "Klik na ", Toast.LENGTH_SHORT).show();
     }
 
     private void setView() {
         lv = findViewById(R.id.list);
+        loadingIndicator = findViewById(R.id.loadingIndicator);
         contextForAdapter = this;
         setBottomNav();
     }

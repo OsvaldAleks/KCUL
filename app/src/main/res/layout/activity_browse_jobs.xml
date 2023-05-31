@@ -26,6 +26,12 @@
             android:layout_marginRight="20dp"
             android:src="@drawable/baseline_filter_list_24"/>
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
