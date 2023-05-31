@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,17 +39,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
     ListView lv;
-    public static class Post {
-
-        public String naziv;
-        public String opis;
-        public int placa;
-        public Post(String naziv, String opis, int placa) {
-            // ...
-        }
-
-    }
-
+    Context contextForAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +48,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         //set values for private variables
         seznamDel = new ArrayList<>();
-        lv = findViewById(R.id.list);
-        Context contextForAdapter = this;
+        updateContext();
 
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -66,7 +58,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
-                    Log.e("test", "Error getting data", task.getException());
                 }
                 else {
                     try {
@@ -79,9 +70,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
                                 //parsing data from fireBase and bulding seznamDel - TODO add more data(so far it's title only)
 
                                 JSONObject deloi = new JSONObject(String.valueOf(jsonObj.get(key)));
-                                Log.d("test", String.valueOf(jsonObj.get(key)));
 
                                 HashMap<String,String> delo = new HashMap<>();
+                                delo.put("id",key);
                                 delo.put("jobTitle",String.valueOf(deloi.get("naziv")));
                                 delo.put("jobPay", String.format("%.2f", Float.valueOf(String.valueOf(deloi.get("placa")))) + getResources().getString(R.string.placaNeto));
                                 delo.put("freeSpace", getResources().getString(R.string.prostaMesta) + String.valueOf(deloi.get("prostaMesta")));
@@ -101,6 +92,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         //bottom navigation code
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -141,6 +133,47 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 new String[]{"jobTitle", "jobPay", "freeSpace", "duration", "worktime", "start"},
                 new int[]{R.id.jobTitle, R.id.jobPay, R.id.freeSpace, R.id.duration, R.id.worktime, R.id.start}
         );
+
+        Log.d("test", "appendingAdapter:"+context);
         lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener((parent, view, position, id)->{
+
+            String ime = (String)((HashMap)seznamDel.get(position)).get("id");
+            Toast.makeText(this, "Klik na " + ime, Toast.LENGTH_SHORT).show();
+
+            setContentView(R.layout.job_detail);
+
+            TextView jobTitle = findViewById(R.id.jobTitle);
+            TextView jobPay = findViewById(R.id.jobPay);
+            TextView freeSpace = findViewById(R.id.freeSpace);
+            TextView duration = findViewById(R.id.duration);
+            TextView worktime = findViewById(R.id.worktime);
+            TextView start = findViewById(R.id.start);
+            TextView description = findViewById(R.id.description);
+            Button back = findViewById(R.id.back);
+
+            jobTitle.setText("NAZIV");
+            jobPay.setText("NAZIV");
+            freeSpace.setText("NAZIV");
+            duration.setText("NAZIV");
+            worktime.setText("NAZIV");
+            start.setText("NAZIV");
+            description.setText("NAZIV");
+            back.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    setContentView(R.layout.activity_browse_jobs);
+                    updateContext();
+                    appendAdapter(contextForAdapter);
+                }
+            });
+
+        });
+        Toast.makeText(this, "Klik na ", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateContext() {
+        lv = findViewById(R.id.list);
+        contextForAdapter = this;
     }
 }
