@@ -197,7 +197,6 @@ public class EditProfile extends AppCompatActivity {
                 }
             }
         } catch (JSONException e) {
-            Toast.makeText(EditProfile.this, ""+e, Toast.LENGTH_LONG).show();
             throw new RuntimeException(e);
         }
     }
