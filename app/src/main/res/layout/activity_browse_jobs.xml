@@ -42,6 +42,7 @@
         android:divider="@null"
         android:dividerHeight="20dp"
         android:listSelector="@android:color/transparent"
+        android:scrollbarSize="0dp"
         >
     </ListView>
     </LinearLayout>
