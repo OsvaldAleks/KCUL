@@ -36,7 +36,7 @@
         android:layout_marginRight="20dp"
         android:layout_height="wrap_content"
         android:id="@+id/opis"
-        android:hint="@string/delovnoMesto"
+        android:hint="@string/studijskaSmer"
         android:background="?attr/colorSecondary"
         android:padding="5dp"
         android:layout_marginVertical="5dp"/>

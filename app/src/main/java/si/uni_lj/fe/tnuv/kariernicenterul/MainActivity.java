@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,24 +35,60 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public static final String MESSAGE_KEY = "si.uni_lj.fe.tnuv.KCUL.MESSAGE";
+    public static final String USER_DATA_FILE = "userData.json";
+    public static final String SAVED_JOBS_FILE = "savedJobs.txt";
     LinearLayout profileB, eventsB, jobsB;
     BottomNavigationView bottomNavigationView;
     ArrayList<String> favouriteJobs;
     DatabaseReference dr;
+    TextView imeUporabnika, emailUporabnika, izobrazbaUporabnika;
     LinearLayout seznamDel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //builds "Moj profil" section
+        profileB = findViewById(R.id.buttonProfile);
+        profileB.setOnClickListener(v->{
+            Intent intent = new Intent(this, EditProfile.class);
+            startActivity(intent);
+        });
+
+        imeUporabnika = findViewById(R.id.imeUporabnika);
+        emailUporabnika = findViewById(R.id.emailUporabnika);
+        izobrazbaUporabnika = findViewById(R.id.izobrazbaUporabnika);
+        readUserData(); //prebere uporabnikove podatke in jih prikaže
+
+        //builds "Shranjena dela" section
+        jobsB = findViewById(R.id.buttonJobs);
+        jobsB.setOnClickListener(v->{
+            Intent intent = new Intent(this, BrowseJobsActivity.class);
+            startActivity(intent);
+        });
+
         seznamDel = findViewById(R.id.seznamDel);
-
         readFavouriteJobs(); //prebere ID-je del, ki so shranjeni v lokalni datoteki
-        fillListOfJobTitles();//naloži info o teh delih iz firebase
+        fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
 
+        //TODO - build "dogodki" section
+        eventsB = findViewById(R.id.buttonEvents);
+        eventsB.setOnClickListener(v->{
+            Intent intent = new Intent(this, BrowseEventsActivity.class);
+            startActivity(intent);
+        });
+
+        //nastavi navigacijo
+        setBottomNav();
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.home);
+    };
+    private void setBottomNav() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.home);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
@@ -75,34 +113,51 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        //find buttons
-        profileB = findViewById(R.id.buttonProfile);
-        eventsB = findViewById(R.id.buttonEvents);
-        jobsB = findViewById(R.id.buttonJobs);
-        //start given activity on button press
-        profileB.setOnClickListener(v->{
-            Intent intent = new Intent(this, EditProfile.class);
-            startActivity(intent);
-        });
-        eventsB.setOnClickListener(v->{
-            Intent intent = new Intent(this, BrowseEventsActivity.class);
-            startActivity(intent);
-        });
-        jobsB.setOnClickListener(v->{
-            Intent intent = new Intent(this, BrowseJobsActivity.class);
-            startActivity(intent);
-        });
     }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        bottomNavigationView.setSelectedItemId(R.id.home);
-    };
+    private void readUserData() {
+        StringBuilder stringBuilder = new StringBuilder();
+        File file = this.getFileStreamPath(USER_DATA_FILE);
+        if(file.exists() && file != null) {
+            try (FileInputStream fis = openFileInput(USER_DATA_FILE);
+                 InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    stringBuilder.append(line).append('\n');
+                    line = reader.readLine();
+                }
+                //if there's no error fill the inputs with values
+                //fillForm(new JSONObject(stringBuilder.toString()));
+                JSONObject data = new JSONObject(stringBuilder.toString());
+                imeUporabnika.setText(data.getString("ime"));
+                emailUporabnika.setText(data.getString("email"));
+
+                String izobrazba = "Izobrazba: ";
+                boolean commaFlag = false;
+                if(data.has("izobrazba")) {
+                    JSONArray izobrazbaArray = data.getJSONArray("izobrazba");
+                    for (int i = 0; i < izobrazbaArray.length(); i++) {
+                        JSONObject entry = izobrazbaArray.getJSONObject(i);
+                        if(commaFlag)
+                            izobrazba += (", " + entry.getString("opis"));
+                        else{
+                            izobrazba += entry.getString("opis");
+                            commaFlag = true;
+                        }
+                    }
+                    izobrazbaUporabnika.setText(izobrazba);
+                }
+
+            } catch (IOException e) {
+            } catch (JSONException e) {
+            }
+        }
+    }
     private void readFavouriteJobs() {
         favouriteJobs = new ArrayList<String>();
-        File file = this.getFileStreamPath("savedJobs.txt");
+        File file = this.getFileStreamPath(SAVED_JOBS_FILE);
         if(file.exists() && file != null) {
-            try (FileInputStream fis = openFileInput("savedJobs.txt");
+            try (FileInputStream fis = openFileInput(SAVED_JOBS_FILE);
                  InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
                  BufferedReader reader = new BufferedReader(inputStreamReader)) {
                 String line = reader.readLine();

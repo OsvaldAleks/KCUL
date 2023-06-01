@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class EditProfile extends AppCompatActivity {
+    public static final String USER_DATA_FILE = "userData.json";
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
     LinearLayout izobrazbaView, izkusnjeView;
     BottomNavigationView bottomNavigationView;
@@ -88,10 +89,10 @@ public class EditProfile extends AppCompatActivity {
 
         //try to read the user data file:
         StringBuilder stringBuilder = new StringBuilder();
-        File file = this.getFileStreamPath("userData.json");
+        File file = this.getFileStreamPath(USER_DATA_FILE);
         if(file.exists() && file != null) {
 
-            try (FileInputStream fis = openFileInput("userData.json");
+            try (FileInputStream fis = openFileInput(USER_DATA_FILE);
                  InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
                  BufferedReader reader = new BufferedReader(inputStreamReader)) {
                 String line = reader.readLine();
@@ -204,7 +205,10 @@ public class EditProfile extends AppCompatActivity {
     //adds new line of inputs to Izobrazba/Izkusnje section
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
-        getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
+        if(v == R.id.seznamIzkusenj)
+            getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
+        else
+            getLayoutInflater().inflate(R.layout.list_item_izobrazba, seznam);
         return 1;
     }
     private int addLineToAndUpdateChanges(int v){
@@ -271,7 +275,7 @@ public class EditProfile extends AppCompatActivity {
         }
 
         //save JSONObject to file
-        try (FileOutputStream fos = openFileOutput("userData.json", Context.MODE_PRIVATE)) { //TODO - filename bi blo smiselno definirat nekje drugje... not totally sure where
+        try (FileOutputStream fos = openFileOutput(USER_DATA_FILE, Context.MODE_PRIVATE)) { //TODO - filename bi blo smiselno definirat nekje drugje... not totally sure where
             fos.write(data.toString().getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

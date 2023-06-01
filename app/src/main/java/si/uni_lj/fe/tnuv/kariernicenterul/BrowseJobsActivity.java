@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class BrowseJobsActivity extends AppCompatActivity {
+    public static final String SAVED_JOBS_FILE = "savedJobs.txt";
     BottomNavigationView bottomNavigationView;
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
@@ -115,10 +116,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
     }
     private void readFavourites() {
         favourites = new ArrayList<String>();
-        File file = this.getFileStreamPath("savedJobs.txt");
+        File file = this.getFileStreamPath(SAVED_JOBS_FILE);
         boolean remove = false;
         if(file.exists() && file != null) {
-            try (FileInputStream fis = openFileInput("savedJobs.txt");
+            try (FileInputStream fis = openFileInput(SAVED_JOBS_FILE);
                  InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
                  BufferedReader reader = new BufferedReader(inputStreamReader)) {
                 String line = reader.readLine();
@@ -207,7 +208,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 toSave += (favourites.get(i)+"\n");
             }
         }
-        try (FileOutputStream fos = openFileOutput("savedJobs.txt", Context.MODE_PRIVATE)) {
+        try (FileOutputStream fos = openFileOutput(SAVED_JOBS_FILE, Context.MODE_PRIVATE)) {
             fos.write(toSave.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
