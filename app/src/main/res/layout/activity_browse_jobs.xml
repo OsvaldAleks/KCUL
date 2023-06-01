@@ -38,13 +38,14 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginHorizontal="20dp"
         android:divider="@null"
         android:dividerHeight="20dp"
         android:listSelector="@android:color/transparent"
         >
     </ListView>
     </LinearLayout>
+    <!-- <Button android:text="ADD" android:id="@+id/addItem" android:layout_height="wrap_content" android:layout_width="wrap_content"/>-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

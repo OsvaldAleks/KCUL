@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -188,8 +191,14 @@ public class MainActivity extends AppCompatActivity {
                         ProgressBar loadingIndicator = findViewById(R.id.loadingIndicatorJobs);
                         loadingIndicator.setVisibility(View.GONE);
                         try {
-                            JSONObject delo = new JSONObject(String.valueOf(task.getResult().getValue()));
-                            addLineToSavedJobs(id, delo.get("naziv").toString());
+                            if(task.getResult().getValue() != null) {
+                                JSONObject delo = new JSONObject(String.valueOf(task.getResult().getValue()));
+                                addLineToSavedJobs(id, delo.get("naziv").toString());
+                            }
+                            else{
+                                favouriteJobs.remove(favouriteJobs.indexOf(id));
+                                saveFavourtesFile();
+                            }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -198,6 +207,23 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void saveFavourtesFile() {
+        String toSave = "";
+        if (favouriteJobs.size() >= 1){
+            for (int i = 0; i < favouriteJobs.size(); i++){
+                toSave += (favouriteJobs.get(i)+"\n");
+            }
+        }
+        try (FileOutputStream fos = openFileOutput(SAVED_JOBS_FILE, Context.MODE_PRIVATE)) {
+            fos.write(toSave.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void addLineToSavedJobs(String id, String naziv) {
         getLayoutInflater().inflate(R.layout.saved_job_line, seznamDel);
         LinearLayout line = (LinearLayout) seznamDel.getChildAt(seznamDel.getChildCount()-1);
