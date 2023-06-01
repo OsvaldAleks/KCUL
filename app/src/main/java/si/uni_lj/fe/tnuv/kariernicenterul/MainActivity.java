@@ -80,23 +80,19 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         //find buttons
         profileB = findViewById(R.id.buttonProfile);
         eventsB = findViewById(R.id.buttonEvents);
         jobsB = findViewById(R.id.buttonJobs);
-
         //start given activity on button press
         profileB.setOnClickListener(v->{
             Intent intent = new Intent(this, EditProfile.class);
             startActivity(intent);
         });
-
         eventsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseEventsActivity.class);
             startActivity(intent);
         });
-
         jobsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseJobsActivity.class);
             startActivity(intent);

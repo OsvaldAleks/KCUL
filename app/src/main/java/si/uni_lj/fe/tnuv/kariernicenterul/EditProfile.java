@@ -171,6 +171,10 @@ public class EditProfile extends AppCompatActivity {
                     ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
                     ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
                     ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
+
+                    ((EditText) line.getChildAt(0)).addTextChangedListener(textWatcher);
+                    ((EditText) line.getChildAt(1)).addTextChangedListener(textWatcher);
+                    ((EditText) line.getChildAt(2)).addTextChangedListener(textWatcher);
                     if (i < izobrazbaArray.length() - 1)
                         addLineTo(R.id.seznamIzobrazbe);
                 }
@@ -184,6 +188,10 @@ public class EditProfile extends AppCompatActivity {
                     ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
                     ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
                     ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
+
+                    ((EditText) line.getChildAt(0)).addTextChangedListener(textWatcher);
+                    ((EditText) line.getChildAt(1)).addTextChangedListener(textWatcher);
+                    ((EditText) line.getChildAt(2)).addTextChangedListener(textWatcher);
                     if (i < izkusnjeArray.length() - 1)
                         addLineTo(R.id.seznamIzkusenj);
                 }
