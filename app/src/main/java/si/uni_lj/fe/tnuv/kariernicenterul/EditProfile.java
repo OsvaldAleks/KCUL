@@ -1,9 +1,13 @@
 package si.uni_lj.fe.tnuv.kariernicenterul;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,10 +35,14 @@ public class EditProfile extends AppCompatActivity {
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
     LinearLayout izobrazbaView, izkusnjeView;
     BottomNavigationView bottomNavigationView;
+    Context contextForPopup;
+    boolean unsavedChanges;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile);
+        contextForPopup = this;
+        unsavedChanges = false;
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.cv);
@@ -46,17 +54,16 @@ public class EditProfile extends AppCompatActivity {
                 switch (item.getItemId())
                 {
                     case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        overridePendingTransition(0,0);
+                        leaveTo(MainActivity.class);
                         return true;
                     case R.id.events:
-                        startActivity(new Intent(getApplicationContext(), BrowseEventsActivity.class));
+                        leaveTo(BrowseEventsActivity.class);
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.cv:
                         return true;
                     case R.id.jobs:
-                        startActivity(new Intent(getApplicationContext(), BrowseJobsActivity.class));
+                        leaveTo(BrowseJobsActivity.class);
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -80,8 +87,6 @@ public class EditProfile extends AppCompatActivity {
         addLineTo(R.id.seznamIzkusenj);
 
         //try to read the user data file:
-
-
         StringBuilder stringBuilder = new StringBuilder();
         File file = this.getFileStreamPath("userData.json");
         if(file.exists() && file != null) {
@@ -103,10 +108,46 @@ public class EditProfile extends AppCompatActivity {
             }
 
         }
+
         //setting onClick listeners
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
+        imeView.addTextChangedListener(textWatcher);
+        ulicaView.addTextChangedListener(textWatcher);
+        hisnaStView.addTextChangedListener(textWatcher);
+        postnaStView.addTextChangedListener(textWatcher);
+        krajView.addTextChangedListener(textWatcher);
+        emailView.addTextChangedListener(textWatcher);
+        telefonView.addTextChangedListener(textWatcher);
+    }
+
+    private void leaveTo(Class activityClass) {
+        if(unsavedChanges) {
+            new AlertDialog.Builder(contextForPopup)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("POZOR")
+                    .setMessage("Vaše spremembe še niso bile shranjene. Želite vseeno zapustiti aktivnost?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(getApplicationContext(), activityClass));
+                        }
+
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bottomNavigationView.setSelectedItemId(R.id.cv);
+                        }
+
+                    })
+                    .show();
+        }
+        else{
+            startActivity(new Intent(getApplicationContext(), activityClass));
+        }
+        overridePendingTransition(0, 0);
     }
 
     //called if userData file exists - fills the form with saved data
@@ -157,6 +198,7 @@ public class EditProfile extends AppCompatActivity {
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
         getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
+        unsavedChanges = true;
         return 1;
     }
 
@@ -226,6 +268,7 @@ public class EditProfile extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        unsavedChanges = false;
         Toast.makeText(EditProfile.this, R.string.fileSaved,Toast.LENGTH_LONG).show();
         return 1;
     }
@@ -256,4 +299,16 @@ public class EditProfile extends AppCompatActivity {
         }
         return out;
     }
+
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            unsavedChanges = true;
+        }
+    };
+
 }
