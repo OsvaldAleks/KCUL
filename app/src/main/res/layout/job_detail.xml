@@ -81,6 +81,7 @@
             android:drawableBottom="@drawable/baseline_star_outline_24"
             android:drawableTint="#ffffff"
             android:focusable="false"
+            android:id="@+id/favourite"
             />
         <Button
             android:text="@string/prijaviSe"

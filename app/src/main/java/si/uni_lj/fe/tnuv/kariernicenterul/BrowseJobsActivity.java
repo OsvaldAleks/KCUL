@@ -192,31 +192,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                     }
                 });
 
-
-                //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
-                Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
-                Drawable emptyStar = getDrawable(R.drawable.baseline_star_outline_24);
-
-                Log.d("test","OUT OF IF"+favourites+" - "+id + " - " + favourites.contains(id) + " - " + position);
-                if(favourites.contains(id)){
-                    Log.d("test","IN IF"+favourites+" - "+id + " - " + favourites.contains(id) + " - " + position);
-                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
-                }
-                else{
-                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
-                }
-                favourite.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        toggleFavourite(id);
-                        if(favourites.contains(id)){
-                            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
-                        }
-                        else{
-                            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
-                        }
-                    }
-                });
+                handleFavouriteButton(favourite, id);
                 return view;
             }
         };
@@ -256,7 +232,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         TextView start = findViewById(R.id.start);
         TextView description = findViewById(R.id.description);
         ImageView back = findViewById(R.id.back);
-
+        Button favourite = findViewById(R.id.favourite);
 
         for (HashMap<String, String> ponudba : seznamDel){
             if(ponudba.get("jobId")==id){
@@ -278,9 +254,36 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 appendAdapter(contextForAdapter);
             }
         });
+
+        handleFavouriteButton(favourite, id);
+
         setBottomNav();
     }
 
+    private void handleFavouriteButton(Button favourite, String id) {
+        //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
+        Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
+        Drawable emptyStar = getDrawable(R.drawable.baseline_star_outline_24);
+
+        if(favourites.contains(id)){
+            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+        }
+        else{
+            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
+        }
+        favourite.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                toggleFavourite(id);
+                if(favourites.contains(id)){
+                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+                }
+                else{
+                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
+                }
+            }
+        });
+    }
     private void setView() {
         lv = findViewById(R.id.list);
         loadingIndicator = findViewById(R.id.loadingIndicator);
