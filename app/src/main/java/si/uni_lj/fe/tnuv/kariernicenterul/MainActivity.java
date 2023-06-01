@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String MESSAGE_KEY = "si.uni_lj.fe.tnuv.KCUL.MESSAGE";
     LinearLayout profileB, eventsB, jobsB;
     BottomNavigationView bottomNavigationView;
     ArrayList<String> favouriteJobs;
@@ -119,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void fillListOfJobTitles() {
+        if (favouriteJobs.size() == 0){
+            setNoJobsText();
+        }
         for(int i = 0; i < favouriteJobs.size(); i++){
             final String id = favouriteJobs.get(i);
             FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -140,11 +145,27 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
-    private void addLineToSavedJobs(String s, String naziv) {
+    private void addLineToSavedJobs(String id, String naziv) {
         getLayoutInflater().inflate(R.layout.saved_job_line, seznamDel);
         LinearLayout line = (LinearLayout) seznamDel.getChildAt(seznamDel.getChildCount()-1);
         TextView nazivTV = (TextView) line.getChildAt(0);
+        nazivTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("LINE","was clicked" + id);
+                Intent intent = new Intent(getApplicationContext(), BrowseJobsActivity.class);
+                intent.putExtra(MESSAGE_KEY, id);
+                startActivity(intent);
+            }
+        });
         nazivTV.setText(naziv);
+    }
+
+    private void setNoJobsText() {
+        getLayoutInflater().inflate(R.layout.saved_job_line, seznamDel);
+        LinearLayout line = (LinearLayout) seznamDel.getChildAt(seznamDel.getChildCount()-1);
+        TextView nazivTV = (TextView) line.getChildAt(0);
+
+        nazivTV.setText(getResources().getString(R.string.nicShranjenihDel));
     }
 }

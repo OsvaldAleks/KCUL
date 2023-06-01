@@ -35,4 +35,5 @@
     <string name="shranjenaDela">Shranjena dela</string>
     <string name="dashboard">Dashboard</string>
     <string name="seznamDogodkov">Prihajajoči dogodki</string>
+    <string name="nicShranjenihDel">Trenutno nimaš shranjenega nobenega dela</string>
 </resources>
