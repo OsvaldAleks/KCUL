@@ -38,4 +38,5 @@
     <string name="nicShranjenihDel">Trenutno nimaš shranjenega nobenega dela</string>
     <string name="pozor">POZOR</string>
     <string name="unsavedChanges">Vaše spremembe še niso bile shranjene. Želite vseeno zapustiti aktivnost?</string>
+    <string name="izvozi">IZVOZI</string>
 </resources>
