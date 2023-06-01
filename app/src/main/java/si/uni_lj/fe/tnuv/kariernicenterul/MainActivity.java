@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 //if there's no error fill the inputs with values
                 //fillForm(new JSONObject(stringBuilder.toString()));
                 JSONObject data = new JSONObject(stringBuilder.toString());
+                emailUporabnika.setVisibility(View.VISIBLE);
+                imeUporabnika.setVisibility(View.VISIBLE);
                 imeUporabnika.setText(data.getString("ime"));
                 emailUporabnika.setText(data.getString("email"));
 
@@ -148,12 +150,17 @@ public class MainActivity extends AppCompatActivity {
                             commaFlag = true;
                         }
                     }
-                    izobrazbaUporabnika.setText(izobrazba);
                 }
+                izobrazbaUporabnika.setText(izobrazba);
 
             } catch (IOException e) {
             } catch (JSONException e) {
             }
+        }
+        else{
+            izobrazbaUporabnika.setText(getResources().getText(R.string.ustvariProfil));
+            emailUporabnika.setVisibility(View.GONE);
+            imeUporabnika.setVisibility(View.GONE);
         }
     }
     private void readFavouriteJobs() {

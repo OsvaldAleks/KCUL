@@ -37,4 +37,5 @@
     <string name="pozor">POZOR</string>
     <string name="unsavedChanges">Vaše spremembe še niso bile shranjene. Želite vseeno zapustiti aktivnost?</string>
     <string name="izvozi">IZVOZI</string>
+    <string name="ustvariProfil">Ustvari svoj profil.</string>
 </resources>
