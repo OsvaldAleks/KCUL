@@ -9,11 +9,11 @@
         android:icon="@drawable/round_event_24"
         android:id="@+id/events"/>
 
-    <item android:title="@string/cv"
+    <item android:title="@string/zivljenjepis"
         android:icon="@drawable/round_assignment_ind_24"
         android:id="@+id/cv"/>
 
-    <item android:title="@string/jobs"
+    <item android:title="@string/ponudbaDel"
         android:icon="@drawable/round_assignment_24"
         android:id="@+id/jobs"/>
 </menu>
