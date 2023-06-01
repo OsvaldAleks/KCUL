@@ -68,7 +68,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
         //set values for private variables
         seznamDel = new ArrayList<>();
         setView();
-
+        readFavourites();
+        loadSeznamDel(); //method also appends adapter after loading is done
+    }
+    private void loadSeznamDel() {
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         dr = db.getReference(Delo.class.getSimpleName());
@@ -86,7 +89,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         while(keys.hasNext()) {
                             String key = keys.next();
                             if (jsonObj.get(key) instanceof JSONObject) {
-                                //parsing data from fireBase and bulding seznamDel - TODO add more data(so far it's title only)
+                                //parsing data from fireBase and bulding seznamDel
 
                                 JSONObject deloi = new JSONObject(String.valueOf(jsonObj.get(key)));
 
@@ -112,7 +115,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void readFavourites() {
         favourites = new ArrayList<String>();
         File file = this.getFileStreamPath("savedJobs.txt");
         boolean remove = false;
@@ -190,25 +195,27 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
 
                 //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
+                Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
+                Drawable emptyStar = getDrawable(R.drawable.baseline_star_outline_24);
 
-                //Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
-                //Drawable emptyStar = getDrawable(R.drawable.baseline_star_outline_24);
-
-                //Log.d("test",favourites+" - "+id);
-                //if(favourites.contains(id)){ //TODO - possibly problematic if the firebase data loads before local savedJobs.txt file is read, because favorites would still be unset
-                //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
-                //}
+                Log.d("test","OUT OF IF"+favourites+" - "+id + " - " + favourites.contains(id) + " - " + position);
+                if(favourites.contains(id)){
+                    Log.d("test","IN IF"+favourites+" - "+id + " - " + favourites.contains(id) + " - " + position);
+                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+                }
+                else{
+                    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
+                }
                 favourite.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         toggleFavourite(id);
-
-                        //if(favourites.contains(id)){
-                        //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
-                        //}
-                        //else{
-                        //    favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
-                        //}
+                        if(favourites.contains(id)){
+                            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, fullStar);
+                        }
+                        else{
+                            favourite.setCompoundDrawablesWithIntrinsicBounds(null, null, null, emptyStar);
+                        }
                     }
                 });
                 return view;
