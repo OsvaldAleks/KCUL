@@ -31,4 +31,8 @@
     <string name="zacetekDela">"Začetek dela: "</string>
     <string name="pokaziVec">POKAŽI VEČ</string>
     <string name="prijaviSe">PRIJAVI SE</string>
+    <string name="mojProfil">Moj profil</string>
+    <string name="shranjenaDela">Shranjena dela</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="seznamDogodkov">Prihajajoči dogodki</string>
 </resources>

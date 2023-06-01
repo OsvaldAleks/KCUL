@@ -9,26 +9,78 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="1">
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="[SAMPLE TEXT]"
-        android:id="@+id/buttonProfile"
-        android:layout_weight="0.25"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="[SAMPLE TEXT]"
-        android:id="@+id/buttonEvents"
-        android:layout_weight="0.25"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:autoSizeTextType="uniform"
+            android:layout_margin="20dp"
+            android:text="@string/dashboard"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="[SAMPLE TEXT]"
-        android:id="@+id/buttonJobs"
-        android:layout_weight="0.25"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[SAMPLE TEXT]"
+            android:id="@+id/buttonProfile"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:background="@drawable/card_background">
+            <TextView
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:autoSizeTextType="uniform"
+                android:layout_width="match_parent"
+                android:text="@string/mojProfil"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/imeUporabnika"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[SAMPLE TEXT]"
+            android:id="@+id/buttonJobs"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:background="@drawable/card_background">
+
+            <TextView
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:autoSizeTextType="uniform"
+                android:layout_width="match_parent"
+                android:text="@string/shranjenaDela"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/seznamDel"
+                android:orientation="vertical"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[SAMPLE TEXT]"
+            android:id="@+id/buttonEvents"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:background="@drawable/card_background">
+
+            <TextView
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:autoSizeTextType="uniform"
+                android:layout_width="match_parent"
+                android:text="@string/seznamDogodkov"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/seznamDogodkov"/>
+        </LinearLayout>
     </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"

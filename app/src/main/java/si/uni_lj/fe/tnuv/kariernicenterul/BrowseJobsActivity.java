@@ -90,7 +90,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
                             String key = keys.next();
                             if (jsonObj.get(key) instanceof JSONObject) {
                                 //parsing data from fireBase and bulding seznamDel
-
                                 JSONObject deloi = new JSONObject(String.valueOf(jsonObj.get(key)));
 
                                 HashMap<String,String> delo = new HashMap<>();
