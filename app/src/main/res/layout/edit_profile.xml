@@ -33,7 +33,7 @@
             android:layout_marginRight="20dp"
             android:gravity="center"
             android:id="@+id/shrani"
-            android:textColor="@color/design_default_color_primary"
+            android:textColor="?attr/colorPrimary"
             android:text="@string/shrani"/>
     </LinearLayout>
         <EditText

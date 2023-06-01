@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -50,6 +52,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ProgressBar loadingIndicator;
     Context contextForAdapter;
     ArrayList<String> favourites;
+    boolean detail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,6 +216,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         }
     }
     private void openJobDetailView(String id) {
+        detail = true;
         setContentView(R.layout.job_detail);
 
         TextView jobTitle = findViewById(R.id.jobTitle);
@@ -240,15 +244,20 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                setContentView(R.layout.activity_browse_jobs);
-                setView();
-                appendAdapter(contextForAdapter);
+                backToList();
             }
         });
         handleFavouriteButton(favourite, id);
 
         setBottomNav();
     }
+
+    private void backToList() {
+        setContentView(R.layout.activity_browse_jobs);
+        setView();
+        appendAdapter(contextForAdapter);
+    }
+
     private void handleFavouriteButton(Button favourite, String id) {
         //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
         Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
@@ -274,9 +283,25 @@ public class BrowseJobsActivity extends AppCompatActivity {
         });
     }
     private void setView() {
+        detail = false;
         lv = findViewById(R.id.list);
+        lv.setOnItemClickListener((parent, view, position, id)->{
+            TextView idView = (TextView) view.findViewById(R.id.jobId);
+            String jobId = idView.getText().toString();
+            openJobDetailView(jobId);
+        });
         loadingIndicator = findViewById(R.id.loadingIndicator);
         contextForAdapter = this;
         setBottomNav();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(detail) {
+            backToList();
+        }
+        else {
+            finish();
+        }
     }
 }
