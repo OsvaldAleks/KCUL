@@ -4,8 +4,9 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="20dp"
-    android:padding="10dp">
+    android:background="@drawable/card_background"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
     <TextView
         android:id="@+id/jobId"
         android:layout_height="0dp"

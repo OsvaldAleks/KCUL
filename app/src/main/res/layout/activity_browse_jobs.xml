@@ -2,7 +2,8 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/colorOnPrimary">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -19,11 +20,11 @@
             android:layout_margin="20dp"
             android:text="@string/PonudbaDel"/>
         <ImageView
-            android:layout_height="match_parent"
-            android:layout_width="0dip"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="20dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/baseline_filter_list_24"/>
     </LinearLayout>
     <ProgressBar
@@ -35,7 +36,12 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:divider="@null"
+        android:dividerHeight="20dp"
+        android:listSelector="@android:color/transparent"
+        >
     </ListView>
     </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView

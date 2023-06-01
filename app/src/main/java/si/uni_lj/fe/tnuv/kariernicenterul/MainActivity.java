@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
     private void readFavouriteJobs() {
         favouriteJobs = new ArrayList<String>();
         File file = this.getFileStreamPath("savedJobs.txt");
-        boolean remove = false;
         if(file.exists() && file != null) {
             try (FileInputStream fis = openFileInput("savedJobs.txt");
                  InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
     private void fillListOfJobTitles() {
         if (favouriteJobs.size() == 0){
             setNoJobsText();
+            ProgressBar loadingIndicator = findViewById(R.id.loadingIndicatorJobs);
+            loadingIndicator.setVisibility(View.GONE);
         }
         for(int i = 0; i < favouriteJobs.size(); i++){
             final String id = favouriteJobs.get(i);
@@ -128,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!task.isSuccessful()) {
                     }
                     else {
+                        ProgressBar loadingIndicator = findViewById(R.id.loadingIndicatorJobs);
+                        loadingIndicator.setVisibility(View.GONE);
                         try {
                             JSONObject delo = new JSONObject(String.valueOf(task.getResult().getValue()));
                             addLineToSavedJobs(id, delo.get("naziv").toString());

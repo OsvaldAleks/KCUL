@@ -11,5 +11,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:id="@+id/naziv"
-        android:text="ERROR SOMETHING WENT WRONG WHILE LOADING"/>
+        android:text="ERROR SOMETHING WENT WRONG WHILE LOADING"
+        android:layout_gravity="center_vertical"/>
 </LinearLayout>

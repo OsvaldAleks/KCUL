@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class BrowseJobsActivity extends AppCompatActivity {
-
     BottomNavigationView bottomNavigationView;
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
@@ -51,7 +50,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ProgressBar loadingIndicator;
     Context contextForAdapter;
     ArrayList<String> favourites;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +110,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
-
     private void readFavourites() {
         favourites = new ArrayList<String>();
         File file = this.getFileStreamPath("savedJobs.txt");
@@ -130,7 +127,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         }
     }
-
     private void setBottomNav() {
         //bottom navigation code
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -162,7 +158,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
-
     private void appendAdapter(Context context) {
         //creates adapter for ListView and appends Array of job offers to said ListView
         SimpleAdapter adapter = new SimpleAdapter(
@@ -217,7 +212,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     private void openJobDetailView(String id) {
         setContentView(R.layout.job_detail);
 
@@ -251,12 +245,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 appendAdapter(contextForAdapter);
             }
         });
-
         handleFavouriteButton(favourite, id);
 
         setBottomNav();
     }
-
     private void handleFavouriteButton(Button favourite, String id) {
         //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
         Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
