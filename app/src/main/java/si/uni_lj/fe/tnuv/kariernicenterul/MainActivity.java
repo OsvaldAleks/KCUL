@@ -102,7 +102,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.home);
+    };
     private void readFavouriteJobs() {
         favouriteJobs = new ArrayList<String>();
         File file = this.getFileStreamPath("savedJobs.txt");

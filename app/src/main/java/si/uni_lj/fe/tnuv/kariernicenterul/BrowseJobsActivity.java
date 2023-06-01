@@ -71,6 +71,11 @@ public class BrowseJobsActivity extends AppCompatActivity {
         readFavourites();
         loadSeznamDel(); //method also appends adapter after loading is done
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.jobs);
+    };
     private void loadSeznamDel() {
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();

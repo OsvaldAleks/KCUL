@@ -36,4 +36,6 @@
     <string name="dashboard">Dashboard</string>
     <string name="seznamDogodkov">Prihajajoči dogodki</string>
     <string name="nicShranjenihDel">Trenutno nimaš shranjenega nobenega dela</string>
+    <string name="pozor">POZOR</string>
+    <string name="unsavedChanges">Vaše spremembe še niso bile shranjene. Želite vseeno zapustiti aktivnost?</string>
 </resources>

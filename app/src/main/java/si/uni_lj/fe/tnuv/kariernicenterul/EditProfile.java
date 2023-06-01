@@ -111,8 +111,8 @@ public class EditProfile extends AppCompatActivity {
 
         //setting onClick listeners
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
-        findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
-        findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
+        findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzobrazbe));
+        findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzkusenj));
         imeView.addTextChangedListener(textWatcher);
         ulicaView.addTextChangedListener(textWatcher);
         hisnaStView.addTextChangedListener(textWatcher);
@@ -126,16 +126,16 @@ public class EditProfile extends AppCompatActivity {
         if(unsavedChanges) {
             new AlertDialog.Builder(contextForPopup)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("POZOR")
-                    .setMessage("Vaše spremembe še niso bile shranjene. Želite vseeno zapustiti aktivnost?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.pozor)
+                    .setMessage(R.string.unsavedChanges)
+                    .setPositiveButton("Da", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             startActivity(new Intent(getApplicationContext(), activityClass));
                         }
 
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Ne", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             bottomNavigationView.setSelectedItemId(R.id.cv);
@@ -198,8 +198,12 @@ public class EditProfile extends AppCompatActivity {
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
         getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
-        unsavedChanges = true;
         return 1;
+    }
+    private int addLineToAndUpdateChanges(int v){
+        addLineTo(v);
+        unsavedChanges = true;
+        return 0;
     }
 
     //saves user data to JSON file
@@ -300,7 +304,31 @@ public class EditProfile extends AppCompatActivity {
         return out;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if(unsavedChanges) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.pozor)
+                    .setMessage(R.string.unsavedChanges)
+                    .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Ne", null)
+                    .show();
+        }
+        else {
+            finish();
+        }
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.cv);
+    };
     private TextWatcher textWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
         }

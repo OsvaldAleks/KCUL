@@ -45,5 +45,11 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationView.setSelectedItemId(R.id.events);
+    };
 }
