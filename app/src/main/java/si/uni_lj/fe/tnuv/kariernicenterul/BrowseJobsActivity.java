@@ -300,6 +300,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                     backToList();
                 else{
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0,0);
                 }
             }
         });
@@ -360,6 +361,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         else {
             finish();
         }
+        overridePendingTransition(0,0);
     }
 /*
     //TODO - delete TEST CODE - adds new listing to Firebase

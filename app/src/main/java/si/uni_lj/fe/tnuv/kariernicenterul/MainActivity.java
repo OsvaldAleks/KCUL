@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         profileB.setOnClickListener(v->{
             Intent intent = new Intent(this, EditProfile.class);
             startActivity(intent);
+            overridePendingTransition(0,0);
         });
 
         imeUporabnika = findViewById(R.id.imeUporabnika);
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         jobsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseJobsActivity.class);
             startActivity(intent);
+            overridePendingTransition(0,0);
         });
 
         seznamDel = findViewById(R.id.seznamDel);
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         eventsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseEventsActivity.class);
             startActivity(intent);
+            overridePendingTransition(0,0);
         });
 
         //nastavi navigacijo
@@ -95,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
         removeJobsFromList();
         readFavouriteJobs(); //prebere ID-je del, ki so shranjeni v lokalni datoteki
         fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
+    }
+
+    @Override
+    public void onBackPressed() {
+        overridePendingTransition(0,0);
     }
 
     private void removeJobsFromList() {
@@ -257,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), BrowseJobsActivity.class);
                 intent.putExtra(MESSAGE_KEY, id);
                 startActivity(intent);
+                overridePendingTransition(0,0);
             }
         });
         favourite.setOnClickListener(new View.OnClickListener() {

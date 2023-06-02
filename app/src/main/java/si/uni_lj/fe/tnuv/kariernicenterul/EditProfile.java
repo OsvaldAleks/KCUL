@@ -43,7 +43,6 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setScreen();
     }
-
     private void setScreen() {
         setContentView(R.layout.edit_profile);
         contextForPopup = this;
@@ -330,6 +329,7 @@ public class EditProfile extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
+                            overridePendingTransition(0,0);
                         }
                     })
                     .setNegativeButton("Ne", null)
@@ -337,6 +337,7 @@ public class EditProfile extends AppCompatActivity {
         }
         else {
             finish();
+            overridePendingTransition(0,0);
         }
     }
     @Override

@@ -52,4 +52,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
         super.onRestart();
         bottomNavigationView.setSelectedItemId(R.id.events);
     };
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(0,0);
+    }
 }
