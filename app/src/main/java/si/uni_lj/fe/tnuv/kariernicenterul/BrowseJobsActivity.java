@@ -204,13 +204,30 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.jobs:
-
+                        resetSeznam();
                         return true;
                 }
                 return false;
             }
         });
     }
+
+    private void resetSeznam() {
+        if(detail){
+            setContentView(R.layout.activity_browse_jobs);
+            setView();
+            //if the detail view was opened from the dashboard reload seznam and forget about it
+            if(detailViewID != null){
+                detailViewID = null;
+                seznamDel = new ArrayList<>();
+                loadSeznamDel();
+            }
+            else{
+                appendAdapter(contextForAdapter);
+            }
+        }
+    }
+
     private void appendAdapter(Context context) {
         //creates adapter for ListView and appends Array of job offers to said ListView
         SimpleAdapter adapter = new SimpleAdapter(
