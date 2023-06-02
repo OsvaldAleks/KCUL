@@ -41,6 +41,10 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setScreen();
+    }
+
+    private void setScreen() {
         setContentView(R.layout.edit_profile);
         contextForPopup = this;
         unsavedChanges = false;
@@ -338,7 +342,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        bottomNavigationView.setSelectedItemId(R.id.cv);
+        setScreen();
     };
     private TextWatcher textWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
