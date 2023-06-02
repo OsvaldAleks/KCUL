@@ -53,17 +53,30 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ProgressBar loadingIndicator;
     Context contextForAdapter;
     ArrayList<String> favourites;
+    String detailViewID;
     boolean detail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
 
-        //set values for private variables
+        //start connection with FireBase
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        dr = db.getReference(Delo.class.getSimpleName());
         seznamDel = new ArrayList<>();
-        setView();
-        readFavourites();
-        loadSeznamDel(); //method also appends adapter after loading is done
+
+        Intent intent = getIntent();
+        detailViewID = intent.getStringExtra(MainActivity.MESSAGE_KEY);
+        if(detailViewID != null){
+            readFavourites();
+            loadSingleJobAndOpenDetailView(detailViewID);
+        }
+        else {
+            //set values for private variables
+            setView();
+            readFavourites();
+            loadSeznamDel(); //method also appends adapter after loading is done
+        }
 /*
         //TODO - detele test code
         Button addNew = findViewById(R.id.addItem);
@@ -81,9 +94,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.jobs);
     };
     private void loadSeznamDel() {
-        //start connection with FireBase
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        dr = db.getReference(Delo.class.getSimpleName());
         //load data from base
         dr.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -120,6 +130,35 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
+                }
+            }
+        });
+    }
+    private void loadSingleJobAndOpenDetailView(String id) {
+        dr.child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                } else {
+                    try {
+                        JSONObject deloi = new JSONObject(String.valueOf(task.getResult().getValue()));
+
+                        HashMap<String, String> delo = new HashMap<>();
+                        delo.put("jobId", id);
+                        delo.put("jobTitle", String.valueOf(deloi.get("naziv")));
+                        delo.put("jobPay", String.format("%.2f", Float.valueOf(String.valueOf(deloi.get("placa")))) + getResources().getString(R.string.placaNeto));
+                        delo.put("freeSpace", getResources().getString(R.string.prostaMesta) + String.valueOf(deloi.get("prostaMesta")));
+                        delo.put("duration", getResources().getString(R.string.trajanje) + String.valueOf(deloi.get("trajanje")));
+                        delo.put("worktime", getResources().getString(R.string.delovnik) + String.valueOf(deloi.get("delovnik")));
+                        delo.put("start", getResources().getString(R.string.zacetekDela) + String.valueOf(deloi.get("zacetekDela")));
+                        delo.put("description", String.valueOf(deloi.get("opis")));
+
+                        seznamDel.add(delo);
+
+                        openJobDetailView(id,2);
+                    } catch (JSONException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -226,7 +265,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void openJobDetailView(String id) {
+    private void openJobDetailView(String id){
+        openJobDetailView(id, 1);
+    }
+    private void openJobDetailView(String id, int backBehaviour) {
         detail = true;
         setContentView(R.layout.job_detail);
 
@@ -239,9 +281,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
         TextView description = findViewById(R.id.description);
         ImageView back = findViewById(R.id.back);
         Button favourite = findViewById(R.id.favourite);
-
         for (HashMap<String, String> ponudba : seznamDel){
-            if(ponudba.get("jobId")==id){
+            if(ponudba.get("jobId").equals(id)){
                 jobTitle.setText(ponudba.get("jobTitle"));
                 jobPay.setText(ponudba.get("jobPay"));
                 freeSpace.setText(ponudba.get("freeSpace"));
@@ -255,7 +296,11 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                backToList();
+                if(backBehaviour == 1)
+                    backToList();
+                else{
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
             }
         });
         handleFavouriteButton(favourite, id);
@@ -308,7 +353,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(detail) {
+        //detailViewID is only non-null when detail screen is opened straight from the dashboard, so if it's non-null we want to go back to the dashboard
+        if(detail && detailViewID == null) {
             backToList();
         }
         else {

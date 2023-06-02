@@ -54,12 +54,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="[SAMPLE TEXT]"
-            android:id="@+id/buttonJobs"
             android:orientation="vertical"
             android:layout_margin="20dp"
             android:background="@drawable/card_background">
-
             <TextView
+                android:id="@+id/buttonJobs"
                 android:layout_height="40dp"
                 android:layout_margin="20dp"
                 android:autoSizeTextType="uniform"

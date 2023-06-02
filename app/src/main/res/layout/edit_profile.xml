@@ -1,23 +1,14 @@
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="?attr/colorOnPrimary">
-    <ScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_weight="1">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
     <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-
+        android:layout_marginBottom="10dp">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -28,191 +19,197 @@
             android:text="@string/zivljenjepis" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="20dp"
-            android:gravity="center"
+            android:layout_gravity="center_vertical"
             android:id="@+id/shrani"
             android:textColor="?attr/colorPrimary"
             android:text="@string/shrani"/>
     </LinearLayout>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/ime"
-            android:hint="@string/ime"
-            android:background="?attr/colorSecondary"
-            android:padding="5dp"
-            android:layout_marginVertical="5dp"/>
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="3"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="2dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/ulica"
-                android:hint="@string/ulica"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="1"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/hisnaSt"
-                android:inputType="number"
-                android:hint="@string/hisnaSt"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="2"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="2dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/postnaSt"
-                android:inputType="number"
-                android:hint="@string/postnaSt"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="5"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/kraj"
-                android:hint="@string/kraj"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:autoSizeTextType="uniform"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/kontakt"/>
-
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/baseline_mail_outline_24"
-                app:tint="?attr/colorOnSecondary" />
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/email"
-                android:hint="@string/email"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-        </LinearLayout>
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/baseline_phone_24"
-                app:tint="?attr/colorOnSecondary" />
-            <EditText
-                android:layout_width="0dip"
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/telefon"
-                android:hint="@string/telefonskaSt"
-                android:background="?attr/colorSecondary"
-                android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:autoSizeTextType="uniform"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/izobrazba"/>
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1">
         <LinearLayout
-            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:id="@+id/seznamIzobrazbe"
-            android:orientation="vertical"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/newIzobrazba"
-            android:text="@string/gumbDodaj"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"/>
+            android:orientation="vertical">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/ime"
+                android:hint="@string/ime"
+                android:background="?attr/colorSecondary"
+                android:padding="5dp"
+                android:layout_marginVertical="5dp"/>
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ulica"
+                    android:hint="@string/ulica"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/hisnaSt"
+                    android:inputType="number"
+                    android:hint="@string/hisnaSt"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:autoSizeTextType="uniform"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/delovneIzkusnje"/>
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:id="@+id/seznamIzkusenj"
-            android:orientation="vertical"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/newDelovnoMesto"
-            android:text="@string/gumbDodaj"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"/>
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/postnaSt"
+                    android:inputType="number"
+                    android:hint="@string/postnaSt"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/kraj"
+                    android:hint="@string/kraj"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+            </LinearLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/izvozi"
-            android:text="@string/izvozi"
-            android:layout_gravity="right"
-            android:layout_margin="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:autoSizeTextType="uniform"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/kontakt"/>
 
-    </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/baseline_mail_outline_24"
+                    app:tint="?attr/colorOnSecondary" />
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/email"
+                    android:hint="@string/email"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/baseline_phone_24"
+                    app:tint="?attr/colorOnSecondary" />
+                <EditText
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/telefon"
+                    android:hint="@string/telefonskaSt"
+                    android:background="?attr/colorSecondary"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:autoSizeTextType="uniform"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/izobrazba"/>
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/seznamIzobrazbe"
+                android:orientation="vertical"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/newIzobrazba"
+                android:text="@string/gumbDodaj"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:autoSizeTextType="uniform"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/delovneIzkusnje"/>
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:id="@+id/seznamIzkusenj"
+                android:orientation="vertical"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/newDelovnoMesto"
+                android:text="@string/gumbDodaj"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/izvozi"
+                android:text="@string/izvozi"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
     </ScrollView>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottom_navigation"
         app:menu="@menu/bottom_nav_menu"/>
-
 </LinearLayout>

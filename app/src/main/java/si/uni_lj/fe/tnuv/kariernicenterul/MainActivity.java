@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String MESSAGE_KEY = "si.uni_lj.fe.tnuv.KCUL.MESSAGE";
     public static final String USER_DATA_FILE = "userData.json";
     public static final String SAVED_JOBS_FILE = "savedJobs.txt";
-    LinearLayout profileB, eventsB, jobsB;
+    LinearLayout profileB, eventsB;
+    TextView jobsB;
     BottomNavigationView bottomNavigationView;
     ArrayList<String> favouriteJobs;
     DatabaseReference dr;
@@ -180,11 +182,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void fillListOfJobTitles() {
-        if (favouriteJobs.size() == 0){
-            setNoJobsText();
-            ProgressBar loadingIndicator = findViewById(R.id.loadingIndicatorJobs);
-            loadingIndicator.setVisibility(View.GONE);
-        }
         for(int i = 0; i < favouriteJobs.size(); i++){
             final String id = favouriteJobs.get(i);
             FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -213,6 +210,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        if (favouriteJobs.size() == 0){
+            setNoJobsText();
+            ProgressBar loadingIndicator = findViewById(R.id.loadingIndicatorJobs);
+            loadingIndicator.setVisibility(View.GONE);
+        }
     }
 
     private void saveFavourtesFile() {
@@ -235,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
         getLayoutInflater().inflate(R.layout.saved_job_line, seznamDel);
         LinearLayout line = (LinearLayout) seznamDel.getChildAt(seznamDel.getChildCount()-1);
         TextView nazivTV = (TextView) line.getChildAt(0);
+        ImageView favourite = (ImageView) line.getChildAt(1);
         nazivTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,14 +246,25 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favouriteJobs.remove(id);
+                if(favouriteJobs.size() == 0){
+                    setNoJobsText();
+                }
+                saveFavourtesFile();
+                line.setVisibility(View.GONE);
+            }
+        });
         nazivTV.setText(naziv);
     }
-
     private void setNoJobsText() {
         getLayoutInflater().inflate(R.layout.saved_job_line, seznamDel);
         LinearLayout line = (LinearLayout) seznamDel.getChildAt(seznamDel.getChildCount()-1);
         TextView nazivTV = (TextView) line.getChildAt(0);
-
+        ImageView star = (ImageView) line.getChildAt(1);
         nazivTV.setText(getResources().getString(R.string.nicShranjenihDel));
+        star.setVisibility(View.GONE);
     }
 }

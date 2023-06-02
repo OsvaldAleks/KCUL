@@ -13,4 +13,12 @@
         android:id="@+id/naziv"
         android:text="ERROR SOMETHING WENT WRONG WHILE LOADING"
         android:layout_gravity="center_vertical"/>
+    <ImageView
+        android:id="@+id/favourite"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/baseline_star_24"/>
 </LinearLayout>
