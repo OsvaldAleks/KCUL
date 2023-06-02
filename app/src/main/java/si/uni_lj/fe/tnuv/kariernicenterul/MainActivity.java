@@ -90,7 +90,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         bottomNavigationView.setSelectedItemId(R.id.home);
-    };
+
+        //have to reset saved jobs else changes whon't be visible when going back with back button
+        removeJobsFromList();
+        readFavouriteJobs(); //prebere ID-je del, ki so shranjeni v lokalni datoteki
+        fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
+    }
+
+    private void removeJobsFromList() {
+        for(int i = seznamDel.getChildCount()-1; i >= 0; i--){
+            seznamDel.removeView(seznamDel.getChildAt(i));
+        }
+    }
+
+    ;
     private void setBottomNav() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.home);
