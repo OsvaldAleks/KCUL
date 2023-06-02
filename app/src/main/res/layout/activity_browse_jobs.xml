@@ -30,7 +30,8 @@
         android:id="@+id/loadingIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:indeterminateTint="?attr/colorPrimaryVariant"/>
     <ListView
         android:paddingTop="10dp"
         android:paddingBottom="10dp"

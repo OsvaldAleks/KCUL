@@ -75,7 +75,8 @@
                 android:id="@+id/loadingIndicatorJobs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"/>
+                android:indeterminate="true"
+                android:indeterminateTint="?attr/colorPrimaryVariant"/>
 
         </LinearLayout>
         <LinearLayout

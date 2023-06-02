@@ -20,5 +20,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/baseline_star_24"/>
+        android:src="@drawable/baseline_star_24"
+        android:tint="?attr/colorOnSecondary"/>
 </LinearLayout>
