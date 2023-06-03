@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_background"
+    android:backgroundTint="?attr/colorSecondary"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@drawable/card_background">
+
+        <TextView
+            android:id="@+id/showAll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Prikaži vse"
+            android:gravity="center"
+            android:background="@drawable/form_left"
+            android:textColor="@color/white"
+            android:backgroundTint="?attr/colorPrimary"
+            android:padding="5dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?attr/colorSecondary"/>
+        <TextView
+            android:id="@+id/savedOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shranjena dela"
+            android:gravity="center"
+            android:background="@drawable/form_center"
+            android:padding="5dp"
+            android:backgroundTint="?attr/colorOnPrimary"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?attr/colorSecondary"/>
+        <TextView
+            android:id="@+id/unsavedOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Neshranjena dela"
+            android:gravity="center"
+            android:background="@drawable/form_right"
+            android:padding="5dp"
+            android:backgroundTint="?attr/colorOnPrimary"/>
+
+    </LinearLayout>
+    <CheckBox
+        android:id="@+id/checkbox_meat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Skrij dela, na katera si prijavljen_a"
+        android:buttonTint="?attr/colorPrimary"/>
+    <Button
+        android:id="@+id/applyFilter"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/apply"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

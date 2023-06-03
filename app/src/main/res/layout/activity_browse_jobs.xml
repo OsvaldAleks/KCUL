@@ -18,6 +18,7 @@
             android:autoSizeTextType="uniform"
             android:text="@string/ponudbaDel"/>
         <ImageView
+            android:id="@+id/filter"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginLeft="10dp"
@@ -26,6 +27,13 @@
             android:src="@drawable/baseline_filter_list_24"
             app:tint="?attr/colorOnSecondary" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/filterForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"/>
     <ProgressBar
         android:id="@+id/loadingIndicator"
         android:layout_width="match_parent"

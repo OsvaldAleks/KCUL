@@ -8,8 +8,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -55,15 +60,21 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> seznamDel;
     ListView lv;
     ProgressBar loadingIndicator;
-    Context contextForAdapter;
     ArrayList<String> favourites;
     ArrayList<String> applied;
     String detailViewID;
+    ImageView filter;
+    LinearLayout filterForm;
     boolean detail;
+    Context context;
+    int filterMode;
+    ColorStateList mainColor, mainColorText, backgroundColor, backgroundColorText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
+
+        filterMode = 0;
 
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -84,8 +95,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
             readAppliedJobs();
             loadSeznamDel(); //method also appends adapter after loading is done
         }
-        //TODO - implement filtering
-/*
+
+        /*
         //TODO - detele test code
         Button addNew = findViewById(R.id.addItem);
         addNew.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +144,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                             }
                         }
                         //after data has been processed append seznam to adapter
-                        appendAdapter(contextForAdapter);
+                        appendAdapter(context);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -237,7 +248,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 loadSeznamDel();
             }
             else{
-                appendAdapter(contextForAdapter);
+                appendAdapter(context);
             }
         }
     }
@@ -345,7 +356,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     private void backToList() {
         setContentView(R.layout.activity_browse_jobs);
         setView();
-        appendAdapter(contextForAdapter);
+        appendAdapter(context);
     }
 
     private void handleFavouriteButton(Button favourite, String id) {
@@ -384,9 +395,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
             apply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    File file = contextForAdapter.getFileStreamPath(USER_DATA_FILE);
+                    File file = context.getFileStreamPath(USER_DATA_FILE);
                     if(!(file.exists() && file != null)){
-                        Toast.makeText(contextForAdapter,R.string.errorNoProfileData ,Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,R.string.errorNoProfileData ,Toast.LENGTH_LONG).show();
                     }
                     else if(applyToJob(id)) {
                         apply.setOnClickListener(null);
@@ -423,6 +434,29 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
     private void setView() {
         detail = false;
+        filter = findViewById(R.id.filter);
+        filterForm = findViewById(R.id.filterForm);
+        filterForm.setVisibility(View.GONE);
+
+        ColorStateList mainColor = null;
+        ColorStateList mainColorText = null;
+        ColorStateList backgroundColor = null;
+        ColorStateList backgroundColorText = null;
+        //TODO - implement filtering
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(filterForm.getChildCount() == 0){
+                    getLayoutInflater().inflate(R.layout.filter_form, filterForm);
+                    filterForm.setVisibility(View.VISIBLE);
+                    setForm();
+                }
+                else{
+                    filterForm.removeView(filterForm.getChildAt(0));
+                    filterForm.setVisibility(View.GONE);
+                }
+            }
+        });
         lv = findViewById(R.id.list);
         lv.setOnItemClickListener((parent, view, position, id)->{
             TextView idView = (TextView) view.findViewById(R.id.jobId);
@@ -430,8 +464,80 @@ public class BrowseJobsActivity extends AppCompatActivity {
             openJobDetailView(jobId);
         });
         loadingIndicator = findViewById(R.id.loadingIndicator);
-        contextForAdapter = this;
+        context = this;
         setBottomNav();
+    }
+
+    private void setForm() {
+        TextView showAll = findViewById(R.id.showAll);
+        TextView savedOnly = findViewById(R.id.savedOnly);
+        TextView unsavedOnly = findViewById(R.id.unsavedOnly);
+
+        if(mainColor == null){
+            mainColor = showAll.getBackgroundTintList();
+            mainColorText = showAll.getTextColors();
+            backgroundColor = savedOnly.getBackgroundTintList();
+            backgroundColorText = savedOnly.getTextColors();
+        }
+        if(filterMode == 1){
+            showAll.setBackgroundTintList(backgroundColor);
+            showAll.setTextColor(backgroundColorText);
+            savedOnly.setBackgroundTintList(mainColor);
+            savedOnly.setTextColor(mainColorText);
+            unsavedOnly.setBackgroundTintList(backgroundColor);
+            unsavedOnly.setTextColor(backgroundColorText);
+        }
+        else if(filterMode == 2){
+            showAll.setBackgroundTintList(backgroundColor);
+            showAll.setTextColor(backgroundColorText);
+            savedOnly.setBackgroundTintList(backgroundColor);
+            savedOnly.setTextColor(backgroundColorText);
+            unsavedOnly.setBackgroundTintList(mainColor);
+            unsavedOnly.setTextColor(mainColorText);
+        }
+        showAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAll.setBackgroundTintList(mainColor);
+                showAll.setTextColor(mainColorText);
+                savedOnly.setBackgroundTintList(backgroundColor);
+                savedOnly.setTextColor(backgroundColorText);
+                unsavedOnly.setBackgroundTintList(backgroundColor);
+                unsavedOnly.setTextColor(backgroundColorText);
+                filterMode = 0;
+            }
+        });
+        savedOnly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAll.setBackgroundTintList(backgroundColor);
+                showAll.setTextColor(backgroundColorText);
+                savedOnly.setBackgroundTintList(mainColor);
+                savedOnly.setTextColor(mainColorText);
+                unsavedOnly.setBackgroundTintList(backgroundColor);
+                unsavedOnly.setTextColor(backgroundColorText);
+                filterMode = 1;
+            }
+        });
+        unsavedOnly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAll.setBackgroundTintList(backgroundColor);
+                showAll.setTextColor(backgroundColorText);
+                savedOnly.setBackgroundTintList(backgroundColor);
+                savedOnly.setTextColor(backgroundColorText);
+                unsavedOnly.setBackgroundTintList(mainColor);
+                unsavedOnly.setTextColor(mainColorText);
+                filterMode = 2;
+            }
+        });
+        findViewById(R.id.applyFilter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterForm.removeView(filterForm.getChildAt(0));
+                filterForm.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override

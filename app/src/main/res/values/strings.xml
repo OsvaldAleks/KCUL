@@ -42,4 +42,5 @@
     <string name="alreadyApplied">Prijava na to delo je bila oddana</string>
     <string name="errorNoProfileData">Preden se prijaviš na delo izpolni svoj življenjepis</string>
     <string name="incorrectEntry">Napaka pri vnosu</string>
+    <string name="apply">POTRDI</string>
 </resources>
