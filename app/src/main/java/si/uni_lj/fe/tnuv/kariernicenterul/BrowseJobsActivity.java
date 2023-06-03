@@ -73,9 +73,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
-
         filterMode = 0;
-
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         dr = db.getReference(Delo.class.getSimpleName());
@@ -95,7 +93,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             readAppliedJobs();
             loadSeznamDel(); //method also appends adapter after loading is done
         }
-
         /*
         //TODO - detele test code
         Button addNew = findViewById(R.id.addItem);
@@ -479,55 +476,31 @@ public class BrowseJobsActivity extends AppCompatActivity {
             backgroundColor = savedOnly.getBackgroundTintList();
             backgroundColorText = savedOnly.getTextColors();
         }
+
         if(filterMode == 1){
-            showAll.setBackgroundTintList(backgroundColor);
-            showAll.setTextColor(backgroundColorText);
-            savedOnly.setBackgroundTintList(mainColor);
-            savedOnly.setTextColor(mainColorText);
-            unsavedOnly.setBackgroundTintList(backgroundColor);
-            unsavedOnly.setTextColor(backgroundColorText);
+            colorFilterElements(savedOnly, showAll, unsavedOnly);
         }
         else if(filterMode == 2){
-            showAll.setBackgroundTintList(backgroundColor);
-            showAll.setTextColor(backgroundColorText);
-            savedOnly.setBackgroundTintList(backgroundColor);
-            savedOnly.setTextColor(backgroundColorText);
-            unsavedOnly.setBackgroundTintList(mainColor);
-            unsavedOnly.setTextColor(mainColorText);
+            colorFilterElements(unsavedOnly, showAll, savedOnly);
         }
         showAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAll.setBackgroundTintList(mainColor);
-                showAll.setTextColor(mainColorText);
-                savedOnly.setBackgroundTintList(backgroundColor);
-                savedOnly.setTextColor(backgroundColorText);
-                unsavedOnly.setBackgroundTintList(backgroundColor);
-                unsavedOnly.setTextColor(backgroundColorText);
+                colorFilterElements(showAll, savedOnly, unsavedOnly);
                 filterMode = 0;
             }
         });
         savedOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAll.setBackgroundTintList(backgroundColor);
-                showAll.setTextColor(backgroundColorText);
-                savedOnly.setBackgroundTintList(mainColor);
-                savedOnly.setTextColor(mainColorText);
-                unsavedOnly.setBackgroundTintList(backgroundColor);
-                unsavedOnly.setTextColor(backgroundColorText);
+                colorFilterElements(savedOnly, showAll, unsavedOnly);
                 filterMode = 1;
             }
         });
         unsavedOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAll.setBackgroundTintList(backgroundColor);
-                showAll.setTextColor(backgroundColorText);
-                savedOnly.setBackgroundTintList(backgroundColor);
-                savedOnly.setTextColor(backgroundColorText);
-                unsavedOnly.setBackgroundTintList(mainColor);
-                unsavedOnly.setTextColor(mainColorText);
+                colorFilterElements(unsavedOnly, showAll, savedOnly);
                 filterMode = 2;
             }
         });
@@ -538,6 +511,15 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 filterForm.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void colorFilterElements(TextView selected, TextView opt2, TextView opt3) {
+        selected.setBackgroundTintList(mainColor);
+        selected.setTextColor(mainColorText);
+        opt2.setBackgroundTintList(backgroundColor);
+        opt2.setTextColor(backgroundColorText);
+        opt3.setBackgroundTintList(backgroundColor);
+        opt3.setTextColor(backgroundColorText);
     }
 
     @Override
