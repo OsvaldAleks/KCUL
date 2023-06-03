@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 imeUporabnika.setText(data.getString("ime"));
                 emailUporabnika.setText(data.getString("email"));
 
-                String izobrazba = "Izobrazba: "; //TODO - make sure this works if the "izobrazba" section is empty
+                String izobrazba = "Izobrazba: ";
                 boolean commaFlag = false;
                 if(data.has("izobrazba")) {
                     JSONArray izobrazbaArray = data.getJSONArray("izobrazba");
@@ -174,8 +174,14 @@ public class MainActivity extends AppCompatActivity {
                             commaFlag = true;
                         }
                     }
+                    if(izobrazbaArray.length() > 0) {
+                        izobrazbaUporabnika.setText(izobrazba);
+                        izobrazbaUporabnika.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        izobrazbaUporabnika.setVisibility(View.GONE);
+                    }
                 }
-                izobrazbaUporabnika.setText(izobrazba);
 
             } catch (IOException e) {
             } catch (JSONException e) {
@@ -183,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             izobrazbaUporabnika.setText(getResources().getText(R.string.ustvariProfil));
+            izobrazbaUporabnika.setVisibility(View.VISIBLE);
             emailUporabnika.setVisibility(View.GONE);
             imeUporabnika.setVisibility(View.GONE);
         }

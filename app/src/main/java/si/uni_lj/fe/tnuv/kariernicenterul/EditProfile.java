@@ -5,15 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,8 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -135,6 +127,7 @@ public class EditProfile extends AppCompatActivity {
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzkusenj));
+        //TODO - export file
         //findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
         imeView.addTextChangedListener(textWatcher);
         ulicaView.addTextChangedListener(textWatcher);
@@ -234,7 +227,7 @@ public class EditProfile extends AppCompatActivity {
     }
     private int addLineToAndUpdateChanges(int v){
         addLineTo(v);
-        unsavedChanges = true;
+        unsavedChanges = true;  //TODO - fix(unsavedChanges should become true when user changes input field, not when they add a new line)
         return 0;
     }
     //saves user data to JSON file
@@ -250,11 +243,47 @@ public class EditProfile extends AppCompatActivity {
         String[][] izobrazba = readListItems(izobrazbaView);
         String[][] izkusnje = readListItems(izkusnjeView);
 
-        //check validity of input - TODO contextual verification
+        //check validity of input
+        boolean valid = true;
+        String errorMsg = "";
+
+        if(!ime.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
+            errorMsg += "ime";
+            valid = false;
+        }
+        if(!ulica.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
+            if(!valid)
+                errorMsg += ", ";
+            errorMsg += "ulica";
+            valid = false;
+        }
+        if(!kraj.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
+            if(!valid)
+                errorMsg += ", ";
+            errorMsg += "kraj";
+            valid = false;
+        }
+        if(!email.matches("^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$")){
+            if(!valid)
+                errorMsg += ", ";
+            errorMsg += "email";
+            valid = false;
+        }
+        if(!(telefon.matches("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$") || telefon.matches("|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$") || telefon.matches("|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$"))){
+            if(!valid)
+                errorMsg += ", ";
+            errorMsg += "telefon";
+            valid = false;
+        }
 
         //check if any are empty
         if(ime.length() == 0 || ulica.length() == 0 || kraj.length() == 0 || email.length() == 0 || telefon.length() == 0 || hisnaSt.length() == 0 || postnaSt.length() == 0){
             Toast.makeText(this, R.string.missingInputError, Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(!valid){
+            Toast.makeText(this, getResources().getString(R.string.incorrectEntry) + ": " + errorMsg, Toast.LENGTH_LONG).show();
             return false;
         }
 

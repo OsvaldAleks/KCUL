@@ -84,6 +84,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
             readAppliedJobs();
             loadSeznamDel(); //method also appends adapter after loading is done
         }
+        //TODO - implement filtering
 /*
         //TODO - detele test code
         Button addNew = findViewById(R.id.addItem);

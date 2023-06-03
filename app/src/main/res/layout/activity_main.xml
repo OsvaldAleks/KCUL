@@ -28,6 +28,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
+            android:paddingBottom="20dp"
             android:background="@drawable/card_background">
             <TextView
                 android:layout_height="35dp"
@@ -52,8 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:id="@+id/izobrazbaUporabnika"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginHorizontal="20dp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
