@@ -38,14 +38,13 @@
             android:orientation="vertical">
             <EditText
                 android:layout_width="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/ime"
                 android:hint="@string/ime"
                 android:background="?attr/colorSecondary"
                 android:padding="5dp"
-                android:layout_marginVertical="5dp"/>
+                android:layout_marginBottom="5dp"/>
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">

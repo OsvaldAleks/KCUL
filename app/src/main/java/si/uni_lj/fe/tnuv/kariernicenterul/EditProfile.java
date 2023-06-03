@@ -5,9 +5,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,8 +39,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class EditProfile extends AppCompatActivity {
     public static final String USER_DATA_FILE = "userData.json";
+    private static final int PERMISSION_REQUEST_CODE = 200;
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
     LinearLayout izobrazbaView, izkusnjeView;
     BottomNavigationView bottomNavigationView;
@@ -43,6 +55,12 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setScreen();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setScreen();
+    };
     private void setScreen() {
         setContentView(R.layout.edit_profile);
         contextForPopup = this;
@@ -117,6 +135,7 @@ public class EditProfile extends AppCompatActivity {
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzkusenj));
+        //findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
         imeView.addTextChangedListener(textWatcher);
         ulicaView.addTextChangedListener(textWatcher);
         hisnaStView.addTextChangedListener(textWatcher);
@@ -125,11 +144,11 @@ public class EditProfile extends AppCompatActivity {
         emailView.addTextChangedListener(textWatcher);
         telefonView.addTextChangedListener(textWatcher);
     }
-
     private void leaveTo(Class activityClass) {
         if(unsavedChanges) {
             new AlertDialog.Builder(contextForPopup)
                     .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setCancelable(false)
                     .setTitle(R.string.pozor)
                     .setMessage(R.string.unsavedChanges)
                     .setPositiveButton("Da", new DialogInterface.OnClickListener() {
@@ -204,7 +223,6 @@ public class EditProfile extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
-
     //adds new line of inputs to Izobrazba/Izkusnje section
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
@@ -219,9 +237,8 @@ public class EditProfile extends AppCompatActivity {
         unsavedChanges = true;
         return 0;
     }
-
     //saves user data to JSON file
-    private int shrani(){
+    private boolean shrani(){
         //read values from fields
         String ime = imeView.getText().toString(),
                 ulica = ulicaView.getText().toString(),
@@ -238,7 +255,7 @@ public class EditProfile extends AppCompatActivity {
         //check if any are empty
         if(ime.length() == 0 || ulica.length() == 0 || kraj.length() == 0 || email.length() == 0 || telefon.length() == 0 || hisnaSt.length() == 0 || postnaSt.length() == 0){
             Toast.makeText(this, R.string.missingInputError, Toast.LENGTH_LONG).show();
-            return 0;
+            return false;
         }
 
         //build JSONObject
@@ -288,7 +305,7 @@ public class EditProfile extends AppCompatActivity {
 
         unsavedChanges = false;
         Toast.makeText(EditProfile.this, R.string.fileSaved,Toast.LENGTH_LONG).show();
-        return 1;
+        return true;
     }
 
     //iterates through LinearLayouts containing EditText-s (for izkusnje/izobrazba) and saves the values as String[][]
@@ -340,11 +357,6 @@ public class EditProfile extends AppCompatActivity {
             overridePendingTransition(0,0);
         }
     }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        setScreen();
-    };
     private TextWatcher textWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
         }
@@ -354,5 +366,35 @@ public class EditProfile extends AppCompatActivity {
             unsavedChanges = true;
         }
     };
+    /*
+    private void saveAndExport() {
+        if(shrani()){
+            export();
+        }
+    }
+    private void export(){
+        if (checkPermission()) {
 
+            Log.d("test", Environment.getExternalStorageDirectory() + " - - - " + "GFG.pdf");
+            Log.d("test", "AAAAAAA");
+            pdfWriter writer = new pdfWriter(this);
+            writer.generatePDF();
+        } else {
+            requestPermission();
+        }
+    }
+    private boolean checkPermission() {
+        // checking of permissions.
+        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        if(checkPermission())
+            export();
+    }
+     */
 }

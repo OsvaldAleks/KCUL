@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String MESSAGE_KEY = "si.uni_lj.fe.tnuv.KCUL.MESSAGE";
     public static final String USER_DATA_FILE = "userData.json";
     public static final String SAVED_JOBS_FILE = "savedJobs.txt";
-    LinearLayout profileB, eventsB;
-    TextView jobsB;
+    LinearLayout profileB;
+    TextView jobsB, eventsB;
     BottomNavigationView bottomNavigationView;
     ArrayList<String> favouriteJobs;
     DatabaseReference dr;

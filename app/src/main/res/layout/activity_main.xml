@@ -10,12 +10,13 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="1">
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:autoSizeTextType="uniform"
-            android:layout_margin="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/dashboard"/>
 
         <LinearLayout
@@ -24,11 +25,15 @@
             android:text="[SAMPLE TEXT]"
             android:id="@+id/buttonProfile"
             android:orientation="vertical"
-            android:layout_margin="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/card_background">
             <TextView
-                android:layout_height="40dp"
-                android:layout_margin="20dp"
+                android:layout_height="35dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
                 android:autoSizeTextType="uniform"
                 android:layout_width="match_parent"
                 android:text="@string/mojProfil"/>
@@ -55,12 +60,15 @@
             android:layout_height="wrap_content"
             android:text="[SAMPLE TEXT]"
             android:orientation="vertical"
-            android:layout_margin="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/card_background">
             <TextView
                 android:id="@+id/buttonJobs"
-                android:layout_height="40dp"
-                android:layout_margin="20dp"
+                android:layout_height="35dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
                 android:autoSizeTextType="uniform"
                 android:layout_width="match_parent"
                 android:text="@string/shranjenaDela"/>
@@ -84,22 +92,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="[SAMPLE TEXT]"
-            android:id="@+id/buttonEvents"
             android:orientation="vertical"
-            android:layout_margin="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/card_background">
 
             <TextView
-                android:layout_height="40dp"
-                android:layout_margin="20dp"
+                android:id="@+id/buttonEvents"
+                android:layout_height="35dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
                 android:autoSizeTextType="uniform"
                 android:layout_width="match_parent"
                 android:text="@string/seznamDogodkov"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:id="@+id/seznamDogodkov"/>
+                android:id="@+id/seznamDogodkov"
+                android:orientation="vertical"/>
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:indeterminateTint="?attr/colorPrimaryVariant"
+                android:layout_marginBottom="10dp"/>
+
         </LinearLayout>
     </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
