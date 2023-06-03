@@ -8,9 +8,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,8 @@ import java.util.Iterator;
 
 public class BrowseJobsActivity extends AppCompatActivity {
     public static final String SAVED_JOBS_FILE = "savedJobs.txt";
+    public static final String APPLIED_JOBS_FILE = "prijave.txt";
+    public static final String USER_DATA_FILE = "userData.json";
     BottomNavigationView bottomNavigationView;
     DatabaseReference dr;
     ArrayList<HashMap<String, String>> seznamDel;
@@ -53,6 +57,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     ProgressBar loadingIndicator;
     Context contextForAdapter;
     ArrayList<String> favourites;
+    ArrayList<String> applied;
     String detailViewID;
     boolean detail;
     @Override
@@ -69,12 +74,14 @@ public class BrowseJobsActivity extends AppCompatActivity {
         detailViewID = intent.getStringExtra(MainActivity.MESSAGE_KEY);
         if(detailViewID != null){
             readFavourites();
+            readAppliedJobs();
             loadSingleJobAndOpenDetailView(detailViewID);
         }
         else {
             //set values for private variables
             setView();
             readFavourites();
+            readAppliedJobs();
             loadSeznamDel(); //method also appends adapter after loading is done
         }
 /*
@@ -164,21 +171,27 @@ public class BrowseJobsActivity extends AppCompatActivity {
         });
     }
     private void readFavourites() {
-        favourites = new ArrayList<String>();
-        File file = this.getFileStreamPath(SAVED_JOBS_FILE);
-        boolean remove = false;
+        favourites = readFile(SAVED_JOBS_FILE);
+    }
+    private void readAppliedJobs(){
+        applied = readFile(APPLIED_JOBS_FILE);
+    }
+    private ArrayList<String> readFile(String FILENAME){
+        ArrayList<String> content = new ArrayList<String>();
+        File file = this.getFileStreamPath(FILENAME);
         if(file.exists() && file != null) {
-            try (FileInputStream fis = openFileInput(SAVED_JOBS_FILE);
+            try (FileInputStream fis = openFileInput(FILENAME);
                  InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
                  BufferedReader reader = new BufferedReader(inputStreamReader)) {
                 String line = reader.readLine();
                 while (line != null) {
-                    favourites.add(line);
+                    content.add(line);
                     line = reader.readLine();
                 }
             } catch (IOException e) {
             }
         }
+        return content;
     }
     private void setBottomNav() {
         //bottom navigation code
@@ -298,6 +311,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
         TextView description = findViewById(R.id.description);
         ImageView back = findViewById(R.id.back);
         Button favourite = findViewById(R.id.favourite);
+        Button apply = findViewById(R.id.apply);
+        TextView prijavaResponse = findViewById(R.id.prijavaResponse);
+
         for (HashMap<String, String> ponudba : seznamDel){
             if(ponudba.get("jobId").equals(id)){
                 jobTitle.setText(ponudba.get("jobTitle"));
@@ -322,10 +338,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
         handleFavouriteButton(favourite, id);
-
+        handleApplicationButton(apply, id, prijavaResponse);
         setBottomNav();
     }
-
     private void backToList() {
         setContentView(R.layout.activity_browse_jobs);
         setView();
@@ -356,6 +371,55 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void handleApplicationButton(Button apply, String id, TextView prijavaResponse) {
+        if(applied.contains(id)){
+            //gray out button
+            apply.setBackgroundColor(apply.getContext().getResources().getColor(R.color.gray));
+            //setText on response
+            prijavaResponse.setText(R.string.alreadyApplied);
+        }
+        else{
+            apply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    File file = contextForAdapter.getFileStreamPath(USER_DATA_FILE);
+                    if(!(file.exists() && file != null)){
+                        Toast.makeText(contextForAdapter,R.string.errorNoProfileData ,Toast.LENGTH_LONG).show();
+                    }
+                    else if(applyToJob(id)) {
+                        apply.setOnClickListener(null);
+                        apply.setBackgroundColor(apply.getContext().getResources().getColor(R.color.gray));
+                        prijavaResponse.setText(R.string.alreadyApplied);
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean applyToJob(String id) {
+        if(applied.contains(id)){
+            return false;
+        }
+        else{
+            applied.add(id);
+        }
+        String toSave = "";
+        if (applied.size() >= 1){
+            for (int i = 0; i < applied.size(); i++){
+                toSave += (applied.get(i)+"\n");
+            }
+        }
+        try (FileOutputStream fos = openFileOutput(APPLIED_JOBS_FILE, Context.MODE_PRIVATE)) {
+            fos.write(toSave.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     private void setView() {
         detail = false;
         lv = findViewById(R.id.list);

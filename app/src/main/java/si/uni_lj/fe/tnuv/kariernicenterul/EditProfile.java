@@ -295,7 +295,7 @@ public class EditProfile extends AppCompatActivity {
         }
 
         //save JSONObject to file
-        try (FileOutputStream fos = openFileOutput(USER_DATA_FILE, Context.MODE_PRIVATE)) { //TODO - filename bi blo smiselno definirat nekje drugje... not totally sure where
+        try (FileOutputStream fos = openFileOutput(USER_DATA_FILE, Context.MODE_PRIVATE)) {
             fos.write(data.toString().getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

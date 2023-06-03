@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 imeUporabnika.setText(data.getString("ime"));
                 emailUporabnika.setText(data.getString("email"));
 
-                String izobrazba = "Izobrazba: ";
+                String izobrazba = "Izobrazba: "; //TODO - make sure this works if the "izobrazba" section is empty
                 boolean commaFlag = false;
                 if(data.has("izobrazba")) {
                     JSONArray izobrazbaArray = data.getJSONArray("izobrazba");

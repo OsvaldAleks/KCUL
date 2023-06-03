@@ -57,11 +57,12 @@
                     android:id="@+id/freeSpace"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"/>
+                    android:layout_weight="1"/>
                 <TextView
                     android:id="@+id/duration"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -71,18 +72,25 @@
                     android:id="@+id/worktime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"/>
+                    android:layout_weight="1"/>
                 <TextView
                     android:id="@+id/start"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
             </LinearLayout>
                 <TextView
                     android:layout_marginVertical="20dp"
                     android:id="@+id/description"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:justificationMode="inter_word"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/prijavaResponse"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="right"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_height="wrap_content"
@@ -91,7 +99,7 @@
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginRight="10dp"
                     android:drawableBottom="@drawable/baseline_star_outline_24"
                     android:drawableTint="#ffffff"
                     android:focusable="false"
@@ -102,8 +110,9 @@
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="3"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginLeft="10dp"
                     android:focusable="false"
+                    android:id="@+id/apply"
                     />
             </LinearLayout>
             </LinearLayout>
