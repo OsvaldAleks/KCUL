@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -125,8 +126,8 @@ public class EditProfile extends AppCompatActivity {
 
         //setting onClick listeners
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
-        findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzobrazbe));
-        findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineToAndUpdateChanges(R.id.seznamIzkusenj));
+        findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
+        findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
         //TODO - export file
         //findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
         imeView.addTextChangedListener(textWatcher);
@@ -187,10 +188,6 @@ public class EditProfile extends AppCompatActivity {
                     ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
                     ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
                     ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
-
-                    ((EditText) line.getChildAt(0)).addTextChangedListener(textWatcher);
-                    ((EditText) line.getChildAt(1)).addTextChangedListener(textWatcher);
-                    ((EditText) line.getChildAt(2)).addTextChangedListener(textWatcher);
                     if (i < izobrazbaArray.length() - 1)
                         addLineTo(R.id.seznamIzobrazbe);
                 }
@@ -204,14 +201,11 @@ public class EditProfile extends AppCompatActivity {
                     ((EditText) line.getChildAt(0)).setText(entry.getString("od"));
                     ((EditText) line.getChildAt(1)).setText(entry.getString("do"));
                     ((EditText) line.getChildAt(2)).setText(entry.getString("opis"));
-
-                    ((EditText) line.getChildAt(0)).addTextChangedListener(textWatcher);
-                    ((EditText) line.getChildAt(1)).addTextChangedListener(textWatcher);
-                    ((EditText) line.getChildAt(2)).addTextChangedListener(textWatcher);
                     if (i < izkusnjeArray.length() - 1)
                         addLineTo(R.id.seznamIzkusenj);
                 }
             }
+            unsavedChanges = false;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -219,16 +213,20 @@ public class EditProfile extends AppCompatActivity {
     //adds new line of inputs to Izobrazba/Izkusnje section
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
+        boolean changes = unsavedChanges;
+        Log.d("test","pre"+unsavedChanges);
         if(v == R.id.seznamIzkusenj)
             getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
         else
             getLayoutInflater().inflate(R.layout.list_item_izobrazba, seznam);
+
+        LinearLayout vrsta = (LinearLayout)seznam.getChildAt(seznam.getChildCount()-1);
+        for(int i = 0; i < vrsta.getChildCount(); i++){
+            ((EditText)vrsta.getChildAt(i)).addTextChangedListener(textWatcher);
+        }
+        unsavedChanges = changes;
+        Log.d("test","post"+unsavedChanges);
         return 1;
-    }
-    private int addLineToAndUpdateChanges(int v){
-        addLineTo(v);
-        unsavedChanges = true;  //TODO - fix(unsavedChanges should become true when user changes input field, not when they add a new line)
-        return 0;
     }
     //saves user data to JSON file
     private boolean shrani(){
