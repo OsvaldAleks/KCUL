@@ -73,13 +73,14 @@ public class BrowseJobsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
+
         filterMode = 0;
         scrollDepth = null;
         appliedJobsHidden = false;
-        //start connection with FireBase
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        dr = db.getReference(Delo.class.getSimpleName());
         seznamDel = new ArrayList<>();
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance(); //start connection with FireBase
+        dr = db.getReference(Delo.class.getSimpleName());
 
         Intent intent = getIntent();
         detailViewID = intent.getStringExtra(MainActivity.MESSAGE_KEY);
@@ -90,8 +91,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
             loadSingleJobAndOpenDetailView(detailViewID);
         }
         else {
-            //set values for private variables
-            setView();
+            setView(); //set values for private variables
             readFavourites();
             readAppliedJobs();
             loadSeznamDel(); //method also appends adapter after loading is done
@@ -113,8 +113,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.jobs);
         lv.setSelection(0);
     };
-    private void loadSeznamDel() {
-        //load data from base
+    private void loadSeznamDel(){//load data from base
         dr.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -215,7 +214,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
         //bottom navigation code
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.jobs);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
@@ -242,7 +240,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
-
     private void resetSeznam() {
         if(detail){
             setContentView(R.layout.activity_browse_jobs);
@@ -258,7 +255,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         }
     }
-
     private void appendAdapter(Context context) {
         //creates adapter for ListView and appends Array of job offers to said ListView
         SimpleAdapter adapter = new SimpleAdapter(
@@ -284,7 +280,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         openJobDetailView(id);
                     }
                 });
-
                 handleFavouriteButton(favourite, id);
                 return view;
             }
@@ -292,37 +287,13 @@ public class BrowseJobsActivity extends AppCompatActivity {
         loadingIndicator.setVisibility(View.GONE);
         lv.setAdapter(adapter);
     }
-    private void toggleFavourite(String jobToFavourite) {
-        if(favourites.contains(jobToFavourite)){
-            favourites.remove(jobToFavourite);
-        }
-        else{
-            favourites.add(jobToFavourite);
-        }
-        String toSave = "";
-        if (favourites.size() >= 1){
-            for (int i = 0; i < favourites.size(); i++){
-                toSave += (favourites.get(i)+"\n");
-            }
-        }
-        try (FileOutputStream fos = openFileOutput(SAVED_JOBS_FILE, Context.MODE_PRIVATE)) {
-            fos.write(toSave.getBytes());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void openJobDetailView(String id){
         openJobDetailView(id, 1);
     }
-    private void openJobDetailView(String id, int backBehaviour) {
+    private void openJobDetailView(String id, int backBehaviour) { //backBehaviour will be 1 if we want the back button to redirect back to job listings and 2 for the dashboard
         detail = true;
-
-        if(backBehaviour == 1){
+        if(backBehaviour == 1) //remembers scroll depth before view changes
             scrollDepth = lv.onSaveInstanceState();
-        }
-
         setContentView(R.layout.job_detail);
 
         TextView jobTitle = findViewById(R.id.jobTitle);
@@ -349,7 +320,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 break;
             }
         }
-
         back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(backBehaviour == 1)
@@ -378,12 +348,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
         appendAdapter(context);
-        //
         if(scrollDepth != null){
             lv.onRestoreInstanceState(scrollDepth);
         }
     }
-
     private void handleFavouriteButton(Button favourite, String id) {
         //COMMENTED CODE HANDLES GRAPHIC CHANGES OF STARS, but it's buggy
         Drawable fullStar = getDrawable(R.drawable.baseline_star_24);
@@ -432,6 +400,15 @@ public class BrowseJobsActivity extends AppCompatActivity {
             });
         }
     }
+    private void toggleFavourite(String jobToFavourite) {
+        if(favourites.contains(jobToFavourite)){
+            favourites.remove(jobToFavourite);
+        }
+        else{
+            favourites.add(jobToFavourite);
+        }
+        saveToFile(favourites, SAVED_JOBS_FILE);
+    }
     private boolean applyToJob(String id) {
         if(applied.contains(id)){
             return false;
@@ -439,20 +416,23 @@ public class BrowseJobsActivity extends AppCompatActivity {
         else{
             applied.add(id);
         }
+        saveToFile(applied, APPLIED_JOBS_FILE);
+        return true;
+    }
+    private void saveToFile(ArrayList<String> values, String FILENAME){
         String toSave = "";
-        if (applied.size() >= 1){
-            for (int i = 0; i < applied.size(); i++){
-                toSave += (applied.get(i)+"\n");
+        if (values.size() >= 1){
+            for (int i = 0; i < values.size(); i++){
+                toSave += (values.get(i)+"\n");
             }
         }
-        try (FileOutputStream fos = openFileOutput(APPLIED_JOBS_FILE, Context.MODE_PRIVATE)) {
+        try (FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE)) {
             fos.write(toSave.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
     }
     private void setView() {
         detail = false;
@@ -477,7 +457,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         lv = findViewById(R.id.list);
         lv.setOnItemClickListener((parent, view, position, id)->{
-            TextView idView = (TextView) view.findViewById(R.id.jobId);
+            TextView idView = view.findViewById(R.id.jobId);
             String jobId = idView.getText().toString();
             openJobDetailView(jobId);
         });
@@ -502,36 +482,30 @@ public class BrowseJobsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 colorFilterElements(showAll, savedOnly, unsavedOnly);
                 filterMode = 0;
-            }
-        });
+        }});
         savedOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 colorFilterElements(savedOnly, showAll, unsavedOnly);
                 filterMode = 1;
-            }
-        });
+        }});
         unsavedOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 colorFilterElements(unsavedOnly, showAll, savedOnly);
                 filterMode = 2;
-            }
-        });
+        }});
         applyFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 filterForm.setVisibility(View.GONE);
                 setSeznamToDisplay();
                 appendAdapter(context);
-            }
-        });
+        }});
     }
-
-    private void setSeznamToDisplay() {
+    private void setSeznamToDisplay() { //handles filtering
         seznamToDisplay = new ArrayList<HashMap<String, String>>();
-        //handle favourites
-        if(filterMode == 0){
+        if(filterMode == 0){ //handle favourites
             seznamToDisplay = (ArrayList<HashMap<String,String>>)seznamDel.clone();
         }
         else{
@@ -544,23 +518,20 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 }
             }
         }
-        //handle applied
-        appliedJobsHidden = hideApplied.isChecked();
+        appliedJobsHidden = hideApplied.isChecked(); //handle applied
         if(hideApplied.isChecked()){
             for(int i = seznamToDisplay.size()-1; i >= 0 ; i--){
                 if(applied.contains(seznamToDisplay.get(i).get("jobId")))
                     seznamToDisplay.remove(seznamToDisplay.get(i));
             }
         }
-
-        if(seznamToDisplay.size() == 0){
+        if(seznamToDisplay.size() == 0){ //set response if no items match query
             findViewById(R.id.filterResponse).setVisibility(View.VISIBLE);
         }
         else{
             findViewById(R.id.filterResponse).setVisibility(View.GONE);
         }
     }
-
     private void colorFilterElements(TextView selected, TextView opt2, TextView opt3) {
         selected.setBackgroundTintList(mainColor);
         selected.setTextColor(mainColorText);
@@ -569,11 +540,9 @@ public class BrowseJobsActivity extends AppCompatActivity {
         opt3.setBackgroundTintList(backgroundColor);
         opt3.setTextColor(backgroundColorText);
     }
-
     @Override
     public void onBackPressed() {
-        //detailViewID is only non-null when detail screen is opened straight from the dashboard, so if it's non-null we want to go back to the dashboard
-        if(detail && detailViewID == null) {
+        if(detail && detailViewID == null) { //detailViewID is only non-null when detail screen is opened straight from the dashboard, so if it's non-null we want to go back to the dashboard
             backToList();
         }
         else {
