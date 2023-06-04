@@ -353,7 +353,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(backBehaviour == 1)
-                    backToList(); //TODO remember scroll depth
+                    backToList();
                 else{
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0,0);
