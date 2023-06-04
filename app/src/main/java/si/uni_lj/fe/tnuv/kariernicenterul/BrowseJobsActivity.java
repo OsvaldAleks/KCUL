@@ -9,9 +9,13 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -64,11 +68,13 @@ public class BrowseJobsActivity extends AppCompatActivity {
     TextView showAll, savedOnly,unsavedOnly;
     ColorStateList mainColor, mainColorText, backgroundColor, backgroundColorText;
     Button applyFilter;
+    Parcelable scrollDepth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
         filterMode = 0;
+        scrollDepth = null;
         appliedJobsHidden = false;
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -104,6 +110,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         bottomNavigationView.setSelectedItemId(R.id.jobs);
+        lv.setSelection(0);
     };
     private void loadSeznamDel() {
         //load data from base
@@ -148,6 +155,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
         });
     }
     private void loadSingleJobAndOpenDetailView(String id) {
+        findViewById(R.id.filterResponse).setVisibility(View.GONE);
+        findViewById(R.id.filter).setVisibility(View.GONE);
         dr.child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -167,6 +176,8 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         delo.put("description", String.valueOf(deloi.get("opis")));
 
                         seznamDel.add(delo);
+
+                        seznamToDisplay = seznamDel;
 
                         openJobDetailView(id,2);
                     } catch (JSONException ex) {
@@ -306,6 +317,11 @@ public class BrowseJobsActivity extends AppCompatActivity {
     }
     private void openJobDetailView(String id, int backBehaviour) {
         detail = true;
+
+        if(backBehaviour == 1){
+            scrollDepth = lv.onSaveInstanceState();
+        }
+
         setContentView(R.layout.job_detail);
 
         TextView jobTitle = findViewById(R.id.jobTitle);
@@ -336,7 +352,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(backBehaviour == 1)
-                    backToList();
+                    backToList(); //TODO remember scroll depth
                 else{
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0,0);
@@ -361,6 +377,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
         appendAdapter(context);
+        //
+        if(scrollDepth != null){
+            lv.onRestoreInstanceState(scrollDepth);
+        }
     }
 
     private void handleFavouriteButton(Button favourite, String id) {

@@ -214,7 +214,6 @@ public class EditProfile extends AppCompatActivity {
     private int addLineTo(int v){
         LinearLayout seznam = findViewById(v);
         boolean changes = unsavedChanges;
-        Log.d("test","pre"+unsavedChanges);
         if(v == R.id.seznamIzkusenj)
             getLayoutInflater().inflate(R.layout.list_item_izkusnje, seznam);
         else
@@ -225,7 +224,6 @@ public class EditProfile extends AppCompatActivity {
             ((EditText)vrsta.getChildAt(i)).addTextChangedListener(textWatcher);
         }
         unsavedChanges = changes;
-        Log.d("test","post"+unsavedChanges);
         return 1;
     }
     //saves user data to JSON file
