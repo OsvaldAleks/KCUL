@@ -4,23 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,23 +50,26 @@ public class BrowseJobsActivity extends AppCompatActivity {
     public static final String USER_DATA_FILE = "userData.json";
     BottomNavigationView bottomNavigationView;
     DatabaseReference dr;
-    ArrayList<HashMap<String, String>> seznamDel;
+    ArrayList<HashMap<String, String>> seznamDel, seznamToDisplay;
     ListView lv;
     ProgressBar loadingIndicator;
-    ArrayList<String> favourites;
-    ArrayList<String> applied;
+    ArrayList<String> favourites, applied;
     String detailViewID;
     ImageView filter;
     LinearLayout filterForm;
-    boolean detail;
+    boolean detail, appliedJobsHidden;
     Context context;
     int filterMode;
+    CheckBox hideApplied;
+    TextView showAll, savedOnly,unsavedOnly;
     ColorStateList mainColor, mainColorText, backgroundColor, backgroundColorText;
+    Button applyFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_jobs);
         filterMode = 0;
+        appliedJobsHidden = false;
         //start connection with FireBase
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         dr = db.getReference(Delo.class.getSimpleName());
@@ -141,6 +137,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
                             }
                         }
                         //after data has been processed append seznam to adapter
+                        seznamToDisplay = seznamDel;
                         appendAdapter(context);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -254,7 +251,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         //creates adapter for ListView and appends Array of job offers to said ListView
         SimpleAdapter adapter = new SimpleAdapter(
                 context,
-                seznamDel,
+                seznamToDisplay,
                 R.layout.job_offer,
                 new String[]{"jobId", "jobTitle", "jobPay", "freeSpace", "duration", "worktime", "start"},
                 new int[]{R.id.jobId, R.id.jobTitle, R.id.jobPay, R.id.freeSpace, R.id.duration, R.id.worktime, R.id.start}
@@ -323,7 +320,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         Button apply = findViewById(R.id.apply);
         TextView prijavaResponse = findViewById(R.id.prijavaResponse);
 
-        for (HashMap<String, String> ponudba : seznamDel){
+        for (HashMap<String, String> ponudba : seznamToDisplay){
             if(ponudba.get("jobId").equals(id)){
                 jobTitle.setText(ponudba.get("jobTitle"));
                 jobPay.setText(ponudba.get("jobPay"));
@@ -353,6 +350,16 @@ public class BrowseJobsActivity extends AppCompatActivity {
     private void backToList() {
         setContentView(R.layout.activity_browse_jobs);
         setView();
+        if(filterMode == 1)
+            colorFilterElements(savedOnly, showAll, unsavedOnly);
+        else if (filterMode == 2)
+            colorFilterElements(unsavedOnly, showAll, savedOnly);
+        hideApplied.post(new Runnable() {
+            @Override
+            public void run() {
+                hideApplied.setChecked(appliedJobsHidden);
+            }
+        });
         appendAdapter(context);
     }
 
@@ -380,7 +387,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             }
         });
     }
-
     private void handleApplicationButton(Button apply, String id, TextView prijavaResponse) {
         if(applied.contains(id)){
             //gray out button
@@ -405,7 +411,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             });
         }
     }
-
     private boolean applyToJob(String id) {
         if(applied.contains(id)){
             return false;
@@ -428,32 +433,27 @@ public class BrowseJobsActivity extends AppCompatActivity {
         }
         return true;
     }
-
     private void setView() {
         detail = false;
         filter = findViewById(R.id.filter);
         filterForm = findViewById(R.id.filterForm);
-        filterForm.setVisibility(View.GONE);
+        findViewById(R.id.filterResponse).setVisibility(View.GONE);
 
-        ColorStateList mainColor = null;
-        ColorStateList mainColorText = null;
-        ColorStateList backgroundColor = null;
-        ColorStateList backgroundColorText = null;
-        //TODO - implement filtering
+        getLayoutInflater().inflate(R.layout.filter_form, filterForm);
+        setForm();
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(filterForm.getChildCount() == 0){
-                    getLayoutInflater().inflate(R.layout.filter_form, filterForm);
+                if(filterForm.getVisibility() == View.GONE){
                     filterForm.setVisibility(View.VISIBLE);
-                    setForm();
                 }
                 else{
-                    filterForm.removeView(filterForm.getChildAt(0));
                     filterForm.setVisibility(View.GONE);
                 }
             }
         });
+        filterForm.setVisibility(View.GONE);
+
         lv = findViewById(R.id.list);
         lv.setOnItemClickListener((parent, view, position, id)->{
             TextView idView = (TextView) view.findViewById(R.id.jobId);
@@ -464,25 +464,18 @@ public class BrowseJobsActivity extends AppCompatActivity {
         context = this;
         setBottomNav();
     }
-
     private void setForm() {
-        TextView showAll = findViewById(R.id.showAll);
-        TextView savedOnly = findViewById(R.id.savedOnly);
-        TextView unsavedOnly = findViewById(R.id.unsavedOnly);
-
+        showAll = findViewById(R.id.showAll);
+        savedOnly = findViewById(R.id.savedOnly);
+        unsavedOnly = findViewById(R.id.unsavedOnly);
         if(mainColor == null){
             mainColor = showAll.getBackgroundTintList();
             mainColorText = showAll.getTextColors();
             backgroundColor = savedOnly.getBackgroundTintList();
             backgroundColorText = savedOnly.getTextColors();
         }
-
-        if(filterMode == 1){
-            colorFilterElements(savedOnly, showAll, unsavedOnly);
-        }
-        else if(filterMode == 2){
-            colorFilterElements(unsavedOnly, showAll, savedOnly);
-        }
+        hideApplied = findViewById(R.id.hideApplied);
+        applyFilter = findViewById(R.id.applyFilter);
         showAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -504,13 +497,47 @@ public class BrowseJobsActivity extends AppCompatActivity {
                 filterMode = 2;
             }
         });
-        findViewById(R.id.applyFilter).setOnClickListener(new View.OnClickListener() {
+        applyFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterForm.removeView(filterForm.getChildAt(0));
                 filterForm.setVisibility(View.GONE);
+                setSeznamToDisplay();
+                appendAdapter(context);
             }
         });
+    }
+
+    private void setSeznamToDisplay() {
+        seznamToDisplay = new ArrayList<HashMap<String, String>>();
+        //handle favourites
+        if(filterMode == 0){
+            seznamToDisplay = (ArrayList<HashMap<String,String>>)seznamDel.clone();
+        }
+        else{
+            for(int i = 0; i < seznamDel.size(); i++){
+                if(filterMode == 1 && favourites.contains(seznamDel.get(i).get("jobId"))){
+                    seznamToDisplay.add(seznamDel.get(i));
+                }
+                else if (filterMode == 2 && !favourites.contains(seznamDel.get(i).get("jobId"))){
+                    seznamToDisplay.add(seznamDel.get(i));
+                }
+            }
+        }
+        //handle applied
+        appliedJobsHidden = hideApplied.isChecked();
+        if(hideApplied.isChecked()){
+            for(int i = seznamToDisplay.size()-1; i >= 0 ; i--){
+                if(applied.contains(seznamToDisplay.get(i).get("jobId")))
+                    seznamToDisplay.remove(seznamToDisplay.get(i));
+            }
+        }
+
+        if(seznamToDisplay.size() == 0){
+            findViewById(R.id.filterResponse).setVisibility(View.VISIBLE);
+        }
+        else{
+            findViewById(R.id.filterResponse).setVisibility(View.GONE);
+        }
     }
 
     private void colorFilterElements(TextView selected, TextView opt2, TextView opt3) {

@@ -34,6 +34,13 @@
         android:orientation="vertical"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="20dp"/>
+    <TextView
+        android:id="@+id/filterResponse"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/noJobsForFilter"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"/>
     <ProgressBar
         android:id="@+id/loadingIndicator"
         android:layout_width="match_parent"
