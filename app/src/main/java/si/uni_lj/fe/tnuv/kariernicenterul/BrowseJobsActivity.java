@@ -86,6 +86,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         if(detailViewID != null){
             readFavourites();
             readAppliedJobs();
+            context = this;
             loadSingleJobAndOpenDetailView(detailViewID);
         }
         else {

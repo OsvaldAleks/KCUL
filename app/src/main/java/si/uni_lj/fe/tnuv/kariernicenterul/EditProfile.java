@@ -227,7 +227,7 @@ public class EditProfile extends AppCompatActivity {
         return 1;
     }
     //saves user data to JSON file
-    private boolean shrani(){
+    private boolean shrani(){ //TODO provide feedback when izobrazba/izkušnje have uncomplete lines
         //read values from fields
         String ime = imeView.getText().toString(),
                 ulica = ulicaView.getText().toString(),
