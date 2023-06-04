@@ -227,7 +227,7 @@ public class EditProfile extends AppCompatActivity {
         return 1;
     }
     //saves user data to JSON file
-    private boolean shrani(){ //TODO provide feedback when izobrazba/izkušnje have uncomplete lines
+    private boolean shrani(){
         //read values from fields
         String ime = imeView.getText().toString(),
                 ulica = ulicaView.getText().toString(),
@@ -244,31 +244,42 @@ public class EditProfile extends AppCompatActivity {
         String errorMsg = "";
 
         if(!ime.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
-            errorMsg += "ime";
+            errorMsg += getResources().getString(R.string.ime);
             valid = false;
         }
         if(!ulica.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
             if(!valid)
                 errorMsg += ", ";
-            errorMsg += "ulica";
+            errorMsg += getResources().getString(R.string.ulica);;
             valid = false;
         }
         if(!kraj.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$")){
             if(!valid)
                 errorMsg += ", ";
-            errorMsg += "kraj";
+            errorMsg += getResources().getString(R.string.kraj);;
             valid = false;
         }
         if(!email.matches("^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*$")){
             if(!valid)
                 errorMsg += ", ";
-            errorMsg += "email";
+            errorMsg += getResources().getString(R.string.email);;
             valid = false;
         }
         if(!(telefon.matches("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$") || telefon.matches("|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$") || telefon.matches("|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$"))){
             if(!valid)
                 errorMsg += ", ";
-            errorMsg += "telefon";
+            errorMsg += getResources().getString(R.string.telefonskaSt);;
+            valid = false;
+        }
+        if(izobrazba == null){
+            if(!valid)
+                errorMsg += ", ";
+            errorMsg += getResources().getString(R.string.izobrazba);
+            valid = false;
+        }
+        if(izkusnje == null){if(!valid)
+            errorMsg += ", ";
+            errorMsg += getResources().getString(R.string.delovneIzkusnje);;
             valid = false;
         }
 
@@ -333,7 +344,7 @@ public class EditProfile extends AppCompatActivity {
         return true;
     }
 
-    //iterates through LinearLayouts containing EditText-s (for izkusnje/izobrazba) and saves the values as String[][]
+    //iterates through LinearLayouts containing EditText-s (for izkusnje/izobrazba) and saves the values as String[][] returns null if any line is invalid
     private String[][] readListItems(LinearLayout seznam){
         int numOfAllItems = seznam.getChildCount(),
             numOfValidEntries = 0;
@@ -350,6 +361,8 @@ public class EditProfile extends AppCompatActivity {
                 tmp[numOfValidEntries][1] = end;
                 tmp[numOfValidEntries][2] = desc;
                 numOfValidEntries++;
+            } else if (!(start.length() == 0 && end.length() == 0 && desc.length() == 0)) {
+                return null;
             }
         }
         //remake the output array with the correct size
