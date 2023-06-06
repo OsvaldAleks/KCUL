@@ -5,11 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,10 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.itextpdf.text.Document;
@@ -43,18 +37,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.SyncFailedException;
 import java.nio.charset.StandardCharsets;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class EditProfile extends AppCompatActivity {
     private static final int CREATE_FILE = 1;
     public static final String USER_DATA_FILE = "userData.json";
-    private static final int PERMISSION_REQUEST_CODE = 200;
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
     LinearLayout izobrazbaView, izkusnjeView;
     BottomNavigationView bottomNavigationView;
@@ -145,7 +132,6 @@ public class EditProfile extends AppCompatActivity {
         findViewById(R.id.shrani).setOnClickListener(v -> shrani());
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
-        //TODO - export file
         findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
         imeView.addTextChangedListener(textWatcher);
         ulicaView.addTextChangedListener(textWatcher);
@@ -427,12 +413,8 @@ public class EditProfile extends AppCompatActivity {
 
     private void saveAndExport() {
         if(shrani(false)) {
-            export();
+            createFile(null);
         }
-    }
-
-    private void export() {
-        createFile(null);
     }
     private void createFile(Uri pickerInitialUri) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -442,7 +424,6 @@ public class EditProfile extends AppCompatActivity {
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
         startActivityForResult(intent, CREATE_FILE);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
