@@ -44,4 +44,5 @@
     <string name="incorrectEntry">Napaka pri vnosu</string>
     <string name="apply">POTRDI</string>
     <string name="noJobsForFilter">Izbranemu filtru ne ustreza nobena ponudba.</string>
+    <string name="cvFilename">CV.pdf</string>
 </resources>

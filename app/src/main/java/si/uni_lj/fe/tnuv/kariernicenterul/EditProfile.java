@@ -5,7 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,9 +20,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +43,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.SyncFailedException;
 import java.nio.charset.StandardCharsets;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class EditProfile extends AppCompatActivity {
+    private static final int CREATE_FILE = 1;
     public static final String USER_DATA_FILE = "userData.json";
     private static final int PERMISSION_REQUEST_CODE = 200;
     EditText imeView, ulicaView, hisnaStView, postnaStView, krajView, emailView, telefonView;
@@ -129,7 +146,7 @@ public class EditProfile extends AppCompatActivity {
         findViewById(R.id.newIzobrazba).setOnClickListener(v -> addLineTo(R.id.seznamIzobrazbe));
         findViewById(R.id.newDelovnoMesto).setOnClickListener(v -> addLineTo(R.id.seznamIzkusenj));
         //TODO - export file
-        //findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
+        findViewById(R.id.izvozi).setOnClickListener(v -> saveAndExport());
         imeView.addTextChangedListener(textWatcher);
         ulicaView.addTextChangedListener(textWatcher);
         hisnaStView.addTextChangedListener(textWatcher);
@@ -227,7 +244,8 @@ public class EditProfile extends AppCompatActivity {
         return 1;
     }
     //saves user data to JSON file
-    private boolean shrani(){
+    private boolean shrani(){return shrani(true);}
+    private boolean shrani(boolean provideFeedback){
         //read values from fields
         String ime = imeView.getText().toString(),
                 ulica = ulicaView.getText().toString(),
@@ -340,7 +358,9 @@ public class EditProfile extends AppCompatActivity {
         }
 
         unsavedChanges = false;
-        Toast.makeText(EditProfile.this, R.string.fileSaved,Toast.LENGTH_LONG).show();
+        if(provideFeedback) {
+            Toast.makeText(EditProfile.this, R.string.fileSaved, Toast.LENGTH_LONG).show();
+        }
         return true;
     }
 
@@ -404,35 +424,56 @@ public class EditProfile extends AppCompatActivity {
             unsavedChanges = true;
         }
     };
-    /*
+
     private void saveAndExport() {
-        if(shrani()){
+        if(shrani(false)) {
             export();
         }
     }
-    private void export(){
-        if (checkPermission()) {
 
-            Log.d("test", Environment.getExternalStorageDirectory() + " - - - " + "GFG.pdf");
-            Log.d("test", "AAAAAAA");
-            pdfWriter writer = new pdfWriter(this);
-            writer.generatePDF();
-        } else {
-            requestPermission();
+    private void export() {
+        createFile(null);
+    }
+    private void createFile(Uri pickerInitialUri) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_TITLE, getResources().getString(R.string.cvFilename));
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        startActivityForResult(intent, CREATE_FILE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (requestCode == CREATE_FILE && resultCode == this.RESULT_OK) {
+            // The result data contains a URI for the document or directory that the user selected.
+            Uri uri = null;
+            if (resultData != null) {
+                uri = resultData.getData();
+                // Perform operations on the document using its URI.
+                //alterDocument(uri);
+                createPdfContent(uri);
+
+            }
         }
     }
-    private boolean checkPermission() {
-        // checking of permissions.
-        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
+    private void createPdfContent(Uri uri) {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, getContentResolver().openOutputStream(uri));
+            document.open();
+            //TODO format content of file
+            //Add content to the PDF
+            String sampleText = "TEST PDF DOCUMENT.";
+            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Paragraph paragraph = new Paragraph(sampleText, font);
+            document.add(paragraph);
 
-    private void requestPermission() {
-        // requesting permissions if not provided.
-        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        if(checkPermission())
-            export();
+            document.close();
+        } catch (DocumentException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        finish();
     }
-     */
 }
