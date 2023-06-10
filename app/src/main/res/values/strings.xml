@@ -45,4 +45,6 @@
     <string name="apply">POTRDI</string>
     <string name="noJobsForFilter">Izbranemu filtru ne ustreza nobena ponudba.</string>
     <string name="cvFilename">CV.pdf</string>
+    <string name="connectionError">Vzpostavite povezavo z internetom in poskusite ponovno</string>
+    <string name="reloadContent">Ponovno naloži</string>
 </resources>

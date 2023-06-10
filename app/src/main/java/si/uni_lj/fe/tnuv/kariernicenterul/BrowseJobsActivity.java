@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -43,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +96,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
             setView(); //set values for private variables
             readFavourites();
             readAppliedJobs();
-            loadSeznamDel(); //method also appends adapter after loading is done
+            if(isNetworkConnected())
+                loadSeznamDel(); //method also appends adapter after loading is done
+            else
+                networkErrorFeedback();
         }
         /*
         //TODO - detele test code
@@ -107,6 +112,35 @@ public class BrowseJobsActivity extends AppCompatActivity {
         });
         */
     }
+
+    private void networkErrorFeedback(){
+
+        getLayoutInflater().inflate(R.layout.network_error, findViewById(R.id.provideFeedback));
+        loadingIndicator.setVisibility(View.GONE);
+        applyFilter.setOnClickListener(null);
+        findViewById(R.id.retry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isNetworkConnected()){
+                    loadingIndicator.setVisibility(View.VISIBLE);
+                    loadSeznamDel();
+                    ((LinearLayout)findViewById(R.id.provideFeedback)).removeView(((LinearLayout) findViewById(R.id.provideFeedback)).getChildAt(0));
+
+                    applyFilter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            filterForm.setVisibility(View.GONE);
+                            setSeznamToDisplay();
+                            appendAdapter(context);
+                        }});
+                }
+                else{
+                    Toast.makeText(context, "Najprej vzpostavite povezavo", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -550,6 +584,14 @@ public class BrowseJobsActivity extends AppCompatActivity {
         }
         overridePendingTransition(0,0);
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+
 /*
     //TODO - delete TEST CODE - adds new listing to Firebase
     public Task<Void> addNewJobToFB(){
