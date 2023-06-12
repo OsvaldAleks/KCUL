@@ -7,20 +7,64 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class BrowseEventsActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
+    DatabaseReference dr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_events);
 
+
+        //readData();
+
+        setBottomNav();
+    }
+
+    private void readData(String username){
+
+        dr = FirebaseDatabase.getInstance().getReference("Dogodki");
+        dr.child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                if(task.isSuccessful()){
+                    if(task.getResult().exists()){
+
+                        DataSnapshot dataSnapshot = task.getResult();
+                        String datum = String.valueOf(dataSnapshot.child("datum").getValue());
+                        String ime = String.valueOf(dataSnapshot.child("ime").getValue());
+                        String lokacija = String.valueOf(dataSnapshot.child("lokacija").getValue());
+                        String predavatelj = String.valueOf(dataSnapshot.child("predavatelj").getValue());
+                    }
+                    else {
+                        Toast.makeText(BrowseEventsActivity.this, "Dogodek ne obstaja", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else{
+                    Toast.makeText(BrowseEventsActivity.this,"Branje neuspesno" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
+    private void setBottomNav() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.events);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
@@ -45,7 +89,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
     @Override
     protected void onRestart() {
