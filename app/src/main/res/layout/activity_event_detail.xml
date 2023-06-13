@@ -1,14 +1,30 @@
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EventDetailActivity"
     android:orientation="vertical"
     android:background="?attr/colorOnPrimary">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="50dp"
+                android:layout_margin="20dp"
+                android:layout_weight="3"
+                android:autoSizeTextType="uniform"
+                android:text="@string/podrobnosti_dogodka" />
+        </LinearLayout>
         <ImageView
             android:src="@drawable/baseline_arrow_back_24"
             android:id="@+id/back"

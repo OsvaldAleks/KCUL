@@ -65,45 +65,8 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
             }
         });
 
-        //String dogodek = "dogodek1";
-        //readData(dogodek);
-
         setBottomNav();
     }
-
-    private void readData(String dogodek){ //dogodek1
-
-        dr = FirebaseDatabase.getInstance().getReference("Dogodki");
-        dr.child(dogodek).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-
-                if(task.isSuccessful()){
-                    if(task.getResult().exists()){
-
-                        DataSnapshot dataSnapshot = task.getResult();
-                        String datum = String.valueOf(dataSnapshot.child("datum").getValue());
-                        String ime = String.valueOf(dataSnapshot.child("ime").getValue());
-                        String lokacija = String.valueOf(dataSnapshot.child("lokacija").getValue());
-                        String predavatelj = String.valueOf(dataSnapshot.child("predavatelj").getValue());
-
-                        System.out.println(datum);
-                        System.out.println(predavatelj);
-
-                    }
-                    else {
-                        Toast.makeText(BrowseEventsActivity.this, "Dogodek ne obstaja", Toast.LENGTH_LONG).show();
-                    }
-                }
-                else{
-                    Toast.makeText(BrowseEventsActivity.this,"Branje neuspesno" , Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-    }
-
     private void setBottomNav() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.events);
@@ -146,7 +109,15 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
     @Override
     public void onItemClick(int position) {
 
-        Toast.makeText(BrowseEventsActivity.this,"You clicked on: " + seznam.get(position).getIme(), Toast.LENGTH_SHORT ).show();
+        //Toast.makeText(BrowseEventsActivity.this,"You clicked on: " + seznam.get(position).getIme(), Toast.LENGTH_SHORT ).show();
+        Intent intent = new Intent(BrowseEventsActivity.this, EventDetailActivity.class);
+        intent.putExtra("EVENT_NAME", seznam.get(position).getIme());
+        intent.putExtra("EVENT_TIME", seznam.get(position).getDatum());
+        intent.putExtra("EVENT_LOCATION", seznam.get(position).getLokacija());
+        intent.putExtra("EVENT_HOST", seznam.get(position).getPredavatelj());
+        //intent.putExtra("EVENT_DESCRIPTION", seznam.get(position).getOpis());
+
+        startActivity(intent);
 
     }
 }

@@ -47,4 +47,5 @@
     <string name="cvFilename">CV.pdf</string>
     <string name="connectionError">Vzpostavite povezavo z internetom in poskusite ponovno</string>
     <string name="reloadContent">Ponovno naloži</string>
+    <string name="podrobnosti_dogodka">Podrobnosti Dogodka</string>
 </resources>
