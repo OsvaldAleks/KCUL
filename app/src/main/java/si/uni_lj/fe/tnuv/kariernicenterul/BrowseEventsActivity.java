@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,15 +30,16 @@ public class BrowseEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browse_events);
 
 
-        //readData();
+        String dogodek = "dogodek1";
+        readData(dogodek);
 
         setBottomNav();
     }
 
-    private void readData(String username){
+    private void readData(String dogodek){ //dogodek1
 
         dr = FirebaseDatabase.getInstance().getReference("Dogodki");
-        dr.child(username).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        dr.child(dogodek).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
 
@@ -49,6 +51,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         String ime = String.valueOf(dataSnapshot.child("ime").getValue());
                         String lokacija = String.valueOf(dataSnapshot.child("lokacija").getValue());
                         String predavatelj = String.valueOf(dataSnapshot.child("predavatelj").getValue());
+
+                        System.out.println(datum);
+                        System.out.println(predavatelj);
+
                     }
                     else {
                         Toast.makeText(BrowseEventsActivity.this, "Dogodek ne obstaja", Toast.LENGTH_LONG).show();
@@ -57,6 +63,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(BrowseEventsActivity.this,"Branje neuspesno" , Toast.LENGTH_LONG).show();
                 }
+
             }
         });
 
