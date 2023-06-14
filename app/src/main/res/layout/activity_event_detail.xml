@@ -46,7 +46,9 @@
                 <TextView
                     android:id="@+id/eventName"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:textStyle="bold"
+                    />
                 <TextView
                     android:id="@+id/eventLocation"
                     android:layout_width="fill_parent"

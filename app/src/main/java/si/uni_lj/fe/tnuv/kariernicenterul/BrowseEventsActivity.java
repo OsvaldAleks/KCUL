@@ -115,8 +115,7 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
         intent.putExtra("EVENT_TIME", seznam.get(position).getDatum());
         intent.putExtra("EVENT_LOCATION", seznam.get(position).getLokacija());
         intent.putExtra("EVENT_HOST", seznam.get(position).getPredavatelj());
-        //intent.putExtra("EVENT_DESCRIPTION", seznam.get(position).getOpis());
-
+        intent.putExtra("EVENT_DESCRIPTION", seznam.get(position).getOpis());
         startActivity(intent);
 
     }

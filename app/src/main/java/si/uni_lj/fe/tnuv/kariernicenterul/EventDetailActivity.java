@@ -31,19 +31,19 @@ public class EventDetailActivity extends AppCompatActivity {
         String currEventLocation = getIntent().getStringExtra("EVENT_LOCATION");
         String currEventTime = getIntent().getStringExtra("EVENT_TIME");
         String currEventHost = getIntent().getStringExtra("EVENT_HOST");
-        //String currEventDesc = getIntent().getStringExtra("EVENT_DESCRIPTION");
+        String currEventDescription = getIntent().getStringExtra("EVENT_DESCRIPTION");
 
         eventName = findViewById(R.id.eventName);
         eventLocation = findViewById(R.id.eventLocation);
         eventDate = findViewById(R.id.eventDate);
         eventHost = findViewById(R.id.eventHost);
-        //eventDescription = findViewById(R.id.eventDescription);
+        eventDescription = findViewById(R.id.eventDescription);
 
         eventName.setText(currEventName);
         eventLocation.setText(currEventLocation);
         eventDate.setText(currEventTime);
         eventHost.setText(currEventHost);
-        //eventDescription.setText(currEventDesc);
+        eventDescription.setText(currEventDescription);
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
