@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -23,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -31,12 +35,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 
 public class EditProfile extends AppCompatActivity {
@@ -445,15 +451,96 @@ public class EditProfile extends AppCompatActivity {
             PdfWriter.getInstance(document, getContentResolver().openOutputStream(uri));
             document.open();
             //TODO format content of file
-            //Add content to the PDF
-            String sampleText = "TEST PDF DOCUMENT.";
-            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-            Paragraph paragraph = new Paragraph(sampleText, font);
+
+            // Add graphic
+            Drawable drawable = getResources().getDrawable(R.drawable.uni_logo);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+
+            Image image = Image.getInstance(bitmapData);
+            image.setAlignment(Image.ALIGN_LEFT);
+            image.scaleToFit(100, 100); // Adjust the size as needed
+            document.add(image);
+
+            document.add(new Paragraph("\n")); // Add empty paragraph for line break
+
+            //Add name
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Paragraph title = new Paragraph(imeView.getText().toString(), titleFont);
+            title.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(title);
+
+            // Add content to the PDF
+            String text = ulicaView.getText().toString() + " " + hisnaStView.getText().toString();
+            Font contentFont = new Font(Font.FontFamily.HELVETICA, 12);
+            Paragraph paragraph = new Paragraph(text, contentFont);
+            paragraph.setAlignment(Paragraph.ALIGN_LEFT);
             document.add(paragraph);
+
+            text = postnaStView.getText().toString() + " " + krajView.getText().toString();
+            paragraph = new Paragraph(text, contentFont);
+            paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph);
+
+            document.add(new Paragraph("\n")); // Add empty paragraph for line break
+
+            text = "KONTAKT";
+            Font contentFontBold = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            paragraph = new Paragraph(text, contentFontBold);
+            paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph);
+
+            text = "e-mail: " + emailView.getText().toString();
+            paragraph = new Paragraph(text, contentFont);
+            paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph);
+
+            text = "telefon: " + telefonView.getText().toString();
+            paragraph = new Paragraph(text, contentFont);
+            paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph);
+
+            String[][] izobrazba = readListItems(izobrazbaView);
+            if(izobrazba.length > 0) {
+                document.add(new Paragraph("\n")); // Add empty paragraph for line break
+                text = "IZOBRAZBA";
+                paragraph = new Paragraph(text, contentFontBold);
+                paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+                document.add(paragraph);
+            }
+            for(String[] item : izobrazba){
+                text = item[0] + " - " + item[1] + ": " + item[2];
+                paragraph = new Paragraph(text, contentFont);
+                paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+                document.add(paragraph);
+            }
+
+            String[][] izkusnje = readListItems(izkusnjeView);
+            if(izkusnje.length > 0) {
+                document.add(new Paragraph("\n")); // Add empty paragraph for line break
+                text = "IZKUŠNJE";
+                paragraph = new Paragraph(text, contentFontBold);
+                paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+                document.add(paragraph);
+            }
+            for(String[] item : izkusnje){
+                text = item[0] + " - " + item[1] + ": " + item[2];
+                paragraph = new Paragraph(text, contentFont);
+                paragraph.setAlignment(Paragraph.ALIGN_LEFT);
+                document.add(paragraph);
+            }
 
             document.close();
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         finish();
     }
