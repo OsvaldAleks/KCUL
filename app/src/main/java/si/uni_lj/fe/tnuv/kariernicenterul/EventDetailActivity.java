@@ -54,6 +54,8 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
+        setBottomNav();
+
     }
 
     private void setBottomNav() {
