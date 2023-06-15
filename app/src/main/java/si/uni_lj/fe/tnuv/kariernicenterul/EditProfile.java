@@ -450,7 +450,6 @@ public class EditProfile extends AppCompatActivity {
         try {
             PdfWriter.getInstance(document, getContentResolver().openOutputStream(uri));
             document.open();
-            //TODO format content of file
 
             // Add graphic
             Drawable drawable = getResources().getDrawable(R.drawable.uni_logo);

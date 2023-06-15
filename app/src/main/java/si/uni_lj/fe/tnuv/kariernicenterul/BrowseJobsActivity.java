@@ -101,16 +101,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
             else
                 networkErrorFeedback();
         }
-        /*
-        //TODO - detele test code
-        Button addNew = findViewById(R.id.addItem);
-        addNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewJobToFB();
-            }
-        });
-        */
     }
 
     private void networkErrorFeedback(){
@@ -590,25 +580,4 @@ public class BrowseJobsActivity extends AppCompatActivity {
 
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
-
-
-/*
-    //TODO - delete TEST CODE - adds new listing to Firebase
-    public Task<Void> addNewJobToFB(){
-        String opis = "Potrebujejo študenta/ko za pomoč pri likvidaciji faktur v Finančno dokumentarni kontroli.";
-        String naziv = "DELO NA RAČUNALNIKU";
-        String delovnik = "izmensko";
-        String trajanje = "po dogovoru";
-        String zacetekDela = "26. 6. 2023";
-        opis = "\"" + opis + "\"";
-        naziv = "\"" + naziv + "\"";
-        delovnik = "\"" + delovnik + "\"";
-        trajanje = "\"" + trajanje + "\"";
-        zacetekDela = "\"" + zacetekDela + "\"";
-
-        float placa = (float)5.92;
-        int prostaMesta = 3;
-        Delo del = new Delo(opis, naziv, delovnik, trajanje, zacetekDela, placa, prostaMesta);
-        return dr.push().setValue(del);
-    }*/
 }

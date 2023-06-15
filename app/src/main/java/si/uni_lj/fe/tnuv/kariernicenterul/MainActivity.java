@@ -93,10 +93,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickList
         readFavouriteJobs(); //prebere ID-je del, ki so shranjeni v lokalni datoteki
         fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
 
-        //TODO - build "dogodki" section
-
-
-
+        //builds "dogodki" section
         eventsB = findViewById(R.id.buttonEvents);
         eventsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseEventsActivity.class);
@@ -109,24 +106,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickList
     }
 
     private void populateRecycler() {
-
-        // Get the reference to your Firebase database
-
         recyclerApliedDogodki = findViewById(R.id.appliedEventList);
         recyclerApliedDogodki.setLayoutManager(new LinearLayoutManager(this));
 
         seznam = new ArrayList<>();
-        appliedDogodekAdapter = new AppliedDogodekAdapter(this, seznam, this); // Initialize the adapter
-        recyclerApliedDogodki.setAdapter(appliedDogodekAdapter); // Set the adapter to the RecyclerView
+        appliedDogodekAdapter = new AppliedDogodekAdapter(this, seznam, this);
+        recyclerApliedDogodki.setAdapter(appliedDogodekAdapter);
 
         Query query = dr.orderByChild("prijavljen").equalTo(true);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                seznam.clear(); // Clear the list before adding new elements
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Dogodek dogodek = snapshot.getValue(Dogodek.class);
-                    if(dogodek != null){
+                    if (dogodek != null) {
                         seznam.add(dogodek);
                     }
                 }
@@ -138,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickList
                 // Handle any errors that occur during data retrieval
             }
         });
-
     }
+
 
     @Override
     protected void onRestart() {
