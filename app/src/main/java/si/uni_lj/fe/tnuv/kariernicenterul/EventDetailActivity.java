@@ -11,16 +11,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class EventDetailActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
+    DatabaseReference dr;
 
     TextView eventName, eventLocation, eventDate, eventHost, eventDescription;
 
     ImageView backButton;
+    Button eventApply;
+
+    int eventID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +39,26 @@ public class EventDetailActivity extends AppCompatActivity {
         String currEventTime = getIntent().getStringExtra("EVENT_TIME");
         String currEventHost = getIntent().getStringExtra("EVENT_HOST");
         String currEventDescription = getIntent().getStringExtra("EVENT_DESCRIPTION");
+        boolean currEventApplied = getIntent().getBooleanExtra("EVENT_APPLIED", false);
+        int currEventID = getIntent().getIntExtra("EVENT_ID", 0);
+        eventID = currEventID;
 
         eventName = findViewById(R.id.eventName);
         eventLocation = findViewById(R.id.eventLocation);
         eventDate = findViewById(R.id.eventDate);
         eventHost = findViewById(R.id.eventHost);
         eventDescription = findViewById(R.id.eventDescription);
+        eventApply = findViewById(R.id.eventApply);
 
         eventName.setText(currEventName);
         eventLocation.setText(currEventLocation);
         eventDate.setText(currEventTime);
         eventHost.setText(currEventHost);
         eventDescription.setText(currEventDescription);
+
+        if(currEventApplied){
+            eventApply.setBackgroundColor(eventApply.getContext().getResources().getColor(R.color.gray));
+        }
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +70,17 @@ public class EventDetailActivity extends AppCompatActivity {
         });
 
         setBottomNav();
+    }
+
+    public void handleEventbutton(View view) {
+
+        eventApply.setBackgroundColor(eventApply.getContext().getResources().getColor(R.color.gray));
+
+        dr = FirebaseDatabase.getInstance().getReference("Dogodki");
+        dr.child("dogodek" + String.valueOf(eventID)).child("prijavljen").setValue(true);
+
+        //V bazi spremenimo za ta dogodek flag prijavljen -> true
+
 
     }
 
@@ -87,6 +113,7 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 }

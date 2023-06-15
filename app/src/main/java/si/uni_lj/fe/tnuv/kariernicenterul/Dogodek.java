@@ -3,15 +3,20 @@ package si.uni_lj.fe.tnuv.kariernicenterul;
 public class Dogodek {
 
     private String ime, datum, lokacija, predavatelj, opis;
+    private boolean prijavljen;
+
+    private int id;
 
     public Dogodek(){}
 
-    public Dogodek(String ime, String datum, String lokacija, String predavatelj, String opis) {
+    public Dogodek(String ime, String datum, String lokacija, String predavatelj, String opis, boolean prijavljen, int id) {
         this.ime = ime;
         this.datum = datum;
         this.lokacija = lokacija;
         this.predavatelj = predavatelj;
         this.opis = opis;
+        this.prijavljen = prijavljen;
+        this.id = id;
     }
 
     public String getIme() {
@@ -52,5 +57,21 @@ public class Dogodek {
 
     public void setOpis(String opis) {
         this.opis = opis;
+    }
+
+    public boolean isPrijavljen() {
+        return prijavljen;
+    }
+
+    public void setPrijavljen(boolean prijavljen) {
+        this.prijavljen = prijavljen;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

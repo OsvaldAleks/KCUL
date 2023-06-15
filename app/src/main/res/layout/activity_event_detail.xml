@@ -95,7 +95,8 @@
                     android:layout_weight="3"
                     android:layout_marginLeft="10dp"
                     android:focusable="false"
-                    android:id="@+id/apply"
+                    android:id="@+id/eventApply"
+                    android:onClick="handleEventbutton"
                     />
             </LinearLayout>
         </LinearLayout>

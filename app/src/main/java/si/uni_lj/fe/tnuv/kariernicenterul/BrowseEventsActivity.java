@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
         seznam = new ArrayList<>();
         recyclerDogodki.setLayoutManager(new LinearLayoutManager(this));
 
+
         adapter = new DogodekAdapter(this, seznam, this);
         recyclerDogodki.setAdapter(adapter);
         dr.addValueEventListener(new ValueEventListener() {
@@ -66,7 +68,10 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
         });
 
         setBottomNav();
+
     }
+
+
     private void setBottomNav() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.events);
@@ -109,6 +114,8 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
     @Override
     public void onItemClick(int position) {
 
+
+
         //Toast.makeText(BrowseEventsActivity.this,"You clicked on: " + seznam.get(position).getIme(), Toast.LENGTH_SHORT ).show();
         Intent intent = new Intent(BrowseEventsActivity.this, EventDetailActivity.class);
         intent.putExtra("EVENT_NAME", seznam.get(position).getIme());
@@ -116,7 +123,11 @@ public class BrowseEventsActivity extends AppCompatActivity implements RecyclerC
         intent.putExtra("EVENT_LOCATION", seznam.get(position).getLokacija());
         intent.putExtra("EVENT_HOST", seznam.get(position).getPredavatelj());
         intent.putExtra("EVENT_DESCRIPTION", seznam.get(position).getOpis());
+        intent.putExtra("EVENT_APPLIED", seznam.get(position).isPrijavljen());
+        intent.putExtra("EVENT_ID", seznam.get(position).getId());
         startActivity(intent);
+
+
 
     }
 }
