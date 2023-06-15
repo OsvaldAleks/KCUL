@@ -2,6 +2,8 @@ package si.uni_lj.fe.tnuv.kariernicenterul;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,9 +22,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import org.checkerframework.checker.units.qual.A;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,8 +42,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerClickListener {
     public static final String MESSAGE_KEY = "si.uni_lj.fe.tnuv.KCUL.MESSAGE";
     public static final String USER_DATA_FILE = "userData.json";
     public static final String SAVED_JOBS_FILE = "savedJobs.txt";
@@ -48,10 +55,18 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference dr;
     TextView imeUporabnika, emailUporabnika, izobrazbaUporabnika;
     LinearLayout seznamDel;
+    RecyclerView recyclerApliedDogodki;
+    AppliedDogodekAdapter appliedDogodekAdapter;
+    ArrayList<Dogodek> seznam;
+
+    private boolean isFirstLaunch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isFirstLaunch = true;
 
         //builds "Moj profil" section
         profileB = findViewById(R.id.buttonProfile);
@@ -79,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
 
         //TODO - build "dogodki" section
+
+
+
         eventsB = findViewById(R.id.buttonEvents);
         eventsB.setOnClickListener(v->{
             Intent intent = new Intent(this, BrowseEventsActivity.class);
@@ -89,6 +107,40 @@ public class MainActivity extends AppCompatActivity {
         //nastavi navigacijo
         setBottomNav();
     }
+
+    private void populateRecycler() {
+
+        // Get the reference to your Firebase database
+
+        recyclerApliedDogodki = findViewById(R.id.appliedEventList);
+        recyclerApliedDogodki.setLayoutManager(new LinearLayoutManager(this));
+
+        seznam = new ArrayList<>();
+        appliedDogodekAdapter = new AppliedDogodekAdapter(this, seznam, this); // Initialize the adapter
+        recyclerApliedDogodki.setAdapter(appliedDogodekAdapter); // Set the adapter to the RecyclerView
+
+        Query query = dr.orderByChild("prijavljen").equalTo(true);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Dogodek dogodek = snapshot.getValue(Dogodek.class);
+                    if(dogodek != null){
+                        seznam.add(dogodek);
+                    }
+                }
+                appliedDogodekAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors that occur during data retrieval
+            }
+        });
+
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -98,6 +150,35 @@ public class MainActivity extends AppCompatActivity {
         removeJobsFromList();
         readFavouriteJobs(); //prebere ID-je del, ki so shranjeni v lokalni datoteki
         fillListOfJobTitles();//naloži info o teh delih iz firebase in jih vstavi v seznam
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isFirstLaunch){
+            //initial check if there is any dogodek applied
+            dr = FirebaseDatabase.getInstance().getReference("Dogodki");
+            Query queryInitial = dr.orderByChild("prijavljen").equalTo(true);
+
+            queryInitial.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Dogodek dogodek = snapshot.getValue(Dogodek.class);
+                        if(dogodek != null){
+                            populateRecycler();
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors that occur during data retrieval
+                }
+            });
+
+            isFirstLaunch = false;
+
+        }
     }
 
     @Override
@@ -296,5 +377,10 @@ public class MainActivity extends AppCompatActivity {
         ImageView star = (ImageView) line.getChildAt(1);
         nazivTV.setText(getResources().getString(R.string.nicShranjenihDel));
         star.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }
